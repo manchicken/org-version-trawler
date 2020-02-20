@@ -1,0 +1,5 @@
+requires 'Net::GitHub',  '>= 0.95';
+requires 'Mojo::SQLite', '>= 3.003';
+requires 'Mojolicious',  '>= 8.33';
+requires 'Modern::Perl', '>= 1.20200211';
+requires 'MIME::Base64', '>= 3.15';
