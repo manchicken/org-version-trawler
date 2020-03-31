@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <%= content 'head_tag' %>
+  </head>
+  <body>
+  <%== scalar @{$breadcrumbs} ? "<ul>" : "<h4>(No crumbs)</h4>" %>
+  % for my $crumb (@{$breadcrumbs}) {
+    <li style="display:inline;">
+      &raquo;
+      <%== exists $crumb->{url} ? qq{<a href="$crumb->{url}">} : "" %><%= $crumb->{title} %><%== exists $crumb->{url} ? "</a>" :"" %>
+    </li>
+  % }
+  <%== scalar @{$breadcrumbs} ? "</ul>" : "" %>
+  <%= content %>
+  <pre><%= dumper $breadcrumbs %></pre>
+  </body>
+</html>

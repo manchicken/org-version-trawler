@@ -1,0 +1,14 @@
+% layout 'default';
+% title 'Charts!';
+
+%# This is the initialization of the chart; it sticks the JavaScript in the header.
+% content_for head_tag => begin
+%== chart_init
+% end
+
+<h2>Versions found for <%= $pkg_name %> in package manager <%= $pkg_mgr_name %></h2>
+
+%# W000! Charts
+%== dependency_version_chart $pkg_mgr_name, $pkg_name
+
+<em>fin.</em>

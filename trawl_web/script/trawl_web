@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+# This allows us to find our own libs which are shared by the Trawler.
+use FindBin qw/$Bin/;
+use lib qq{$Bin/../../lib};
+
+use Mojo::File 'curfile';
+use lib curfile->dirname->sibling('lib')->to_string;
+use Mojolicious::Commands;
+
+# Start command line interface for application
+Mojolicious::Commands->start_app('TrawlWeb');

@@ -46,6 +46,17 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
+  DBD-Pg-3.10.4
+    pathname: T/TU/TURNSTEP/DBD-Pg-3.10.4.tar.gz
+    provides:
+      Bundle::DBD::Pg v3.10.4
+      DBD::Pg v3.10.4
+    requirements:
+      DBI 1.614
+      ExtUtils::MakeMaker 6.11
+      Test::More 0.88
+      Time::HiRes 0
+      version 0
   DBD-SQLite-1.64
     pathname: I/IS/ISHIGAKI/DBD-SQLite-1.64.tar.gz
     provides:
@@ -382,6 +393,14 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Net::SSLeay 1.46
       Scalar::Util 0
+  JSON-4.02
+    pathname: I/IS/ISHIGAKI/JSON-4.02.tar.gz
+    provides:
+      JSON 4.02
+      JSON::Backend::PP 4.02
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
   JSON-MaybeXS-1.004000
     pathname: H/HA/HAARG/JSON-MaybeXS-1.004000.tar.gz
     provides:
@@ -519,6 +538,22 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Mojo-Pg-4.18
+    pathname: S/SR/SRI/Mojo-Pg-4.18.tar.gz
+    provides:
+      Mojo::Pg 4.18
+      Mojo::Pg::Database undef
+      Mojo::Pg::Migrations undef
+      Mojo::Pg::PubSub undef
+      Mojo::Pg::Results undef
+      Mojo::Pg::Transaction undef
+      SQL::Abstract::Pg undef
+    requirements:
+      DBD::Pg 3.007004
+      ExtUtils::MakeMaker 0
+      Mojolicious 8.03
+      SQL::Abstract 1.86
+      perl 5.010001
   Mojo-SQLite-3.003
     pathname: D/DB/DBOOK/Mojo-SQLite-3.003.tar.gz
     provides:
@@ -698,25 +733,25 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test 0
       perl 5.006
-  Net-GitHub-0.95
-    pathname: F/FA/FAYLAND/Net-GitHub-0.95.tar.gz
+  Net-GitHub-0.96
+    pathname: F/FA/FAYLAND/Net-GitHub-0.96.tar.gz
     provides:
-      Net::GitHub 0.95
-      Net::GitHub::V3 0.95
-      Net::GitHub::V3::Events 0.95
-      Net::GitHub::V3::Gists 0.95
-      Net::GitHub::V3::GitData 0.95
-      Net::GitHub::V3::Gitignore 0.95
-      Net::GitHub::V3::Issues 0.95
-      Net::GitHub::V3::OAuth 0.95
+      Net::GitHub 0.96
+      Net::GitHub::V3 0.96
+      Net::GitHub::V3::Events 0.96
+      Net::GitHub::V3::Gists 0.96
+      Net::GitHub::V3::GitData 0.96
+      Net::GitHub::V3::Gitignore 0.96
+      Net::GitHub::V3::Issues 0.96
+      Net::GitHub::V3::OAuth 0.96
       Net::GitHub::V3::Orgs 0.60
-      Net::GitHub::V3::PullRequests 0.95
-      Net::GitHub::V3::Query 0.95
-      Net::GitHub::V3::Repos 0.95
-      Net::GitHub::V3::ResultSet 0.95
+      Net::GitHub::V3::PullRequests 0.96
+      Net::GitHub::V3::Query 0.96
+      Net::GitHub::V3::Repos 0.96
+      Net::GitHub::V3::ResultSet 0.96
       Net::GitHub::V3::Search 0.68
-      Net::GitHub::V3::Users 0.95
-      Net::GitHub::V4 0.95
+      Net::GitHub::V3::Users 0.96
+      Net::GitHub::V4 0.96
     requirements:
       Cache::LRU 0
       ExtUtils::MakeMaker 0
@@ -757,6 +792,16 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       MIME::Base64 0
       perl 5.008001
+  Readonly-2.05
+    pathname: S/SA/SANKO/Readonly-2.05.tar.gz
+    provides:
+      Readonly 2.05
+      Readonly::Array undef
+      Readonly::Hash undef
+      Readonly::Scalar undef
+    requirements:
+      Module::Build::Tiny 0.035
+      perl 5.005
   Role-Tiny-2.001004
     pathname: H/HA/HAARG/Role-Tiny-2.001004.tar.gz
     provides:
@@ -791,6 +836,14 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Scalar::Util 0
       perl 5.006
+  Syntax-Keyword-Try-0.11
+    pathname: P/PE/PEVANS/Syntax-Keyword-Try-0.11.tar.gz
+    provides:
+      Syntax::Keyword::Try 0.11
+    requirements:
+      ExtUtils::CBuilder 0
+      Module::Build 0.4004
+      perl 5.014
   Test-Requires-0.10
     pathname: T/TO/TOKUHIROM/Test-Requires-0.10.tar.gz
     provides:
@@ -1082,7 +1135,7 @@ DISTRIBUTIONS
       HTTP::Request 6
       HTTP::Request::Common 6
       HTTP::Response 6
-      HTTP::Status 6.18
+      HTTP::Status 6
       IO::Select 0
       IO::Socket 0
       LWP::MediaTypes 6

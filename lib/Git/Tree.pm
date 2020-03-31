@@ -17,7 +17,7 @@ sub new {
   return bless $self, $pkg;
 }
 
-sub next {
+sub next_node {
   my ($self, $filter) = @_;
 
   if (ref $filter and ref $filter ne 'CODE') {

@@ -1,0 +1,12 @@
+% layout 'default';
+% title 'Charts!';
+
+% content_for head_tag => begin
+%== chart_init
+% end
+
+<h2>Package Manager Chart</h2>
+
+%== package_manager_chart
+
+<em>fin.</em>
