@@ -44,8 +44,8 @@ sub sort_semver {
     my ($str) = @_;
     my ($nums, $mods) = split /-/x, $str, 2;
     my ($major, $minor, $patch) = split /\./x, $nums, 3;
-    $major = $major eq ''                         ? 0 : int($major);
-    $minor = $minor eq ''                         ? 0 : int($minor);
+    $major = (not defined $major or $major eq '') ? 0 : int($major);
+    $minor = (not defined $minor or $minor eq '') ? 0 : int($minor);
     $patch = (not defined $patch or $patch eq '') ? 0 : int($patch);
 
     return ($major, $minor, $patch, $mods || undef);

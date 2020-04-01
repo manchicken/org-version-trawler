@@ -53,7 +53,7 @@ EOSQL
 __DATA__
 
 @@ dependency_popularity_chart.html.ep
-% sub min_height { return $_ > 500 ? $_ : 500 }
+% sub min_height { my ($x) = @_; $x > 500 ? $x : 500; }
 % my $height = min_height(int($colorCount) * 15);
 <p>This chart shows all of the dependencies for <%= $package_manager %> having two or more consumers, sorted by popularity (irrespective of version) across all repositories, in descending order. For a full list of dependencies used in this package manager, SEE HERE(TODO).</p>
 <div style="width: 900px; height: <%=$height%>px;"><canvas style="width:900px; height:<%=$height%>px;" id="dependencyPopularityChart"></canvas></div>

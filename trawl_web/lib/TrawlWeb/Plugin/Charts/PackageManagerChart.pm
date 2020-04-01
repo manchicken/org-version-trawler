@@ -48,7 +48,7 @@ EOSQL
 __DATA__
 
 @@ package_manager_chart.html.ep
-% sub min_height { return $_ > 500 ? $_ : 500 }
+% sub min_height { my ($x) = @_; $x > 500 ? $x : 500; }
 % my $height = min_height(int($colorCount) * 15);
 <div style="width: 900px; height: <%=$height%>px;"><canvas style="width:900px; height:<%=$height%>px;" id="packageManagerChart"></canvas></div>
 <script>
