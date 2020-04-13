@@ -11,6 +11,7 @@ ENV TRAWLER_DATA_DIR=/app-data
 # Set up the app dir, move the cpanfile
 RUN mkdir -p /app
 COPY ./cpanfile /app/
+COPY ./cpanfile.snapshot /app/
 WORKDIR /app/
 
 # Set up dependencies
