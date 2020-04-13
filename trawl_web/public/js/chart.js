@@ -15,3 +15,5 @@ const getColors = (prev, one) => {
 
 const getChartColors = count =>
   getColors(startingColor, count).map(x => `rgb(${x[0]},${x[1]},${x[2]})`);
+
+const fixpath = str => str.replace(/\//g, "_SLASH_").replace(/\./g, "_DOT_");

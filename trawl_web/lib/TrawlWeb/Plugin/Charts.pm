@@ -17,12 +17,11 @@ use TrawlWeb::Plugin::Charts::DependencyVersionChart;
 sub register {
   my ($self, $app, $conf) = @_;
 
-  $self->{_refs} = {
-    app => $app,
-    conf => $conf,
-  };
+  $self->{_refs} = { app  => $app,
+                     conf => $conf,
+                   };
 
-  $self->register_helpers( $app );
+  $self->register_helpers($app);
 
   return $self;
 }
@@ -31,15 +30,26 @@ sub register_helpers {
   my ($self, $app) = @_;
 
   $app->helper('chart_init', \&print_boilerplate);
-  $app->helper('package_manager_chart', sub {
-    return TrawlWeb::Plugin::Charts::PackageManagerChart::render($self, @_);
-  } );
-  $app->helper('dependency_popularity_chart', sub {
-    return TrawlWeb::Plugin::Charts::DependencyPopularityChart::render($self, @_);
-  } );
-  $app->helper('dependency_version_chart', sub {
-    return TrawlWeb::Plugin::Charts::DependencyVersionChart::render($self, @_);
-  } );
+  $app->helper(
+    'package_manager_chart',
+    sub {
+      return TrawlWeb::Plugin::Charts::PackageManagerChart::render($self, @_);
+    }
+  );
+  $app->helper(
+    'dependency_popularity_chart',
+    sub {
+      return TrawlWeb::Plugin::Charts::DependencyPopularityChart::render($self,
+                                                                         @_);
+    }
+  );
+  $app->helper(
+    'dependency_version_chart',
+    sub {
+      return TrawlWeb::Plugin::Charts::DependencyVersionChart::render($self,
+                                                                      @_);
+    }
+  );
 }
 
 # Function to grab and cache the DB handle
@@ -62,12 +72,11 @@ sub get_chart_tpl {
 
   if (!$name) {
     $name = $pkg;
-    $pkg = 'TrawlWeb::Plugin::Charts';
+    $pkg  = 'TrawlWeb::Plugin::Charts';
   }
 
-  say STDERR "GETTING TEMPLATE FOR ${name} in ${pkg}.";
-
-  return data_section($pkg, "${name}.html.ep") || "UNKNOWN TEMPLATE: ${name}.html.ep";
+  return data_section($pkg, "${name}.html.ep")
+    || "UNKNOWN TEMPLATE: ${name}.html.ep";
 }
 
 1;

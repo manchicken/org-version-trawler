@@ -1,14 +1,15 @@
 % layout 'default';
 % title 'Charts!';
+% use TrawlWeb::Util qw/unfixname/;
 
 %# This is the initialization of the chart; it sticks the JavaScript in the header.
 % content_for head_tag => begin
 %== chart_init
 % end
 
-<h2>Versions found for <%= $pkg_name %> in package manager <%= $pkg_mgr_name %></h2>
+<h2>Versions found for <%= unfixname($pkg_name) %> in package manager <%= unfixname($pkg_mgr_name) %></h2>
 
 %# W000! Charts
-%== dependency_version_chart $pkg_mgr_name, $pkg_name
+%== dependency_version_chart unfixname($pkg_mgr_name), unfixname($pkg_name)
 
 <em>fin.</em>

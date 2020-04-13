@@ -1,0 +1,15 @@
+**/.DS_Store
+**/.dockerignore
+**/.env
+!test/**/.env
+**/npm-debug.log
+**/node_modules/
+
+**/*.md
+
+dev/
+!dev/supervisord.conf
+docker-compose.override.yml
+
+.git*
+local*
