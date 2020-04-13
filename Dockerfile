@@ -8,17 +8,21 @@ RUN cpanm Carton
 RUN mkdir -p /app-data
 ENV TRAWLER_DATA_DIR=/app-data
 
-# Set up the app dir
+# Set up the app dir, move the cpanfile
 RUN mkdir -p /app
-COPY ./ /app/
+COPY ./cpanfile /app/
 WORKDIR /app/
+
+# Set up dependencies
+RUN carton install --deployment
+
+# Copy over the code.
+COPY ./ /app/
 
 # Move the startup-data to the data dir.
 RUN mv /app/startup-data/* /app-data
 RUN rm -rf /app/startup-data
 
-# Set up dependencies
-RUN carton install --deployment
 EXPOSE 3000/tcp
 
 # Set the entry-point to the runner.
