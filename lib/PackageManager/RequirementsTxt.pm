@@ -25,9 +25,18 @@ sub parse {
   my ($self) = @_;
 
   my $text = $self->{data}->content;
-  $self->{content} = [ grep { $_ !~ m/^\s+?#/xs } split(m/\r?\n/x, $text) ];
+  $self->{content} = [ grep { $_ !~ m/^\s+?\#/xs } split(m/\r?\n/x, $text) ];
 
   return;
+}
+
+sub has_dependencies {
+  my ($self) = @_;
+
+  # Lazy parse.
+  $self->parse() if ('ARRAY' ne ref $self->{content});
+
+  return scalar @{ $self->{content} } > 0;
 }
 
 sub next_dependency {

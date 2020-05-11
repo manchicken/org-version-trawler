@@ -13,6 +13,7 @@ use Persistence;
 use TrawlWeb::Plugin::Charts::PackageManagerChart;
 use TrawlWeb::Plugin::Charts::DependencyPopularityChart;
 use TrawlWeb::Plugin::Charts::DependencyVersionChart;
+use TrawlWeb::Plugin::Charts::VersionRepositoryChart;
 
 sub register {
   my ($self, $app, $conf) = @_;
@@ -47,6 +48,13 @@ sub register_helpers {
     'dependency_version_chart',
     sub {
       return TrawlWeb::Plugin::Charts::DependencyVersionChart::render($self,
+                                                                      @_);
+    }
+  );
+  $app->helper(
+    'version_repository_chart',
+    sub {
+      return TrawlWeb::Plugin::Charts::VersionRepositoryChart::render($self,
                                                                       @_);
     }
   );

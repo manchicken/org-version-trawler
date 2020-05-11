@@ -8,6 +8,7 @@ use PackageManager::RequirementsTxt;
 use PackageManager::PipfileLock;
 use PackageManager::PackageJson;
 use PackageManager::Dockerfile;
+use PackageManager::CfnLambdaRuntime;
 
 Readonly::Scalar my $managers => {
                PackageManager::RequirementsTxt->package_manager_details->{re} =>
@@ -18,6 +19,8 @@ Readonly::Scalar my $managers => {
                  q?PackageManager::PackageJson?,
                PackageManager::Dockerfile->package_manager_details->{re} =>
                  q?PackageManager::Dockerfile?,
+               PackageManager::CfnLambdaRuntime->package_manager_details->{re} =>
+                 q?PackageManager::CfnLambdaRuntime?,
 };
 
 sub has_package_manager {

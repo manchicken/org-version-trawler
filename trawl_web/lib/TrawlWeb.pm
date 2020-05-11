@@ -24,6 +24,8 @@ sub startup {
   $r->get('/package_manager/:pkg_mgr_name')->to('home#package_manager');
   $r->get('/package_manager/:pkg_mgr_name/package_name/:pkg_name')
     ->to('home#package_name');
+  $r->get('/package_manager/:pkg_mgr_name/package_name/:pkg_name/version/:pkg_version')
+    ->to('home#package_version');
 }
 
 1;

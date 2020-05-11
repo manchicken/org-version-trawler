@@ -60,6 +60,16 @@ sub extract_deps {
   return;
 }
 
+sub has_dependencies {
+  my ($self) = @_;
+
+  # Lazy parse.
+  $self->parse()
+    if (not exists $self->{deps});
+
+  return scalar @{ $self->{deps} } > 0;
+}
+
 sub next_dependency {
   my ($self) = @_;
 

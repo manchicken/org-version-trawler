@@ -65,7 +65,7 @@ __DATA__
 @@ dependency_version_chart.html.ep
 % use TrawlWeb::Util qw/min_height/;
 % my $height = min_height(int($colorCount) * 15);
-<p>This chart shows all of the versions for the <%= $package_name %> dependency in the <%= $package_manager %> package manager.
+<p>This chart shows all of the versions for the <%= $package_name %> dependency in the <%= $package_manager %> package manager.</p>
 <div style="width: 900px; height: <%=$height%>px;"><canvas style="width:900px; height:<%=$height%>px;" id="dependencyVersionChart"></canvas></div>
 <script>
   const ctx = document.getElementById('dependencyVersionChart').getContext('2d')
@@ -84,6 +84,17 @@ __DATA__
       scales: {
         xAxes: [{ ticks: { beginAtZero: true, suggestedMin: 1, precision: 0 } }],
         yAxes: [{ ticks: { beginAtZero: true, suggestedMin: 1, precision: 0 } }]
+      },
+      onClick: (e) => {
+        const chartNode = chart.getElementsAtEvent(e)[0]
+        window.chartNode = chartNode
+        console.log(chartNode._model.label);
+
+        const pkgVersion = <%= $labels %>[chartNode._index] || null;
+        if (chartNode._model.label) {
+          document.location.href = '/package_manager/<%= $package_manager %>/package_name/<%= $package_name %>/version/'+
+            fixpath(pkgVersion);
+        }
       }
     }
   })

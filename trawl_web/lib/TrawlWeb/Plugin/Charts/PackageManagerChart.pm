@@ -72,7 +72,6 @@ __DATA__
         window.chartNode = chartNode
         const pkgMgr = <%= $labels %>[chartNode._index] || null;
         if (chartNode._model.label) document.location.href = '/package_manager/'+encodeURI(pkgMgr);
-        console.log(chartNode._model.label);
       }
     }
   })
