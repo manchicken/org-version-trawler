@@ -73,13 +73,16 @@ sub next_package_blob {
     )
   {
 
-    # Get the dependencies.
+    # Get the package manager
     my $pkg_mgr = PackageManager->load($next_blob);
     if (not $pkg_mgr) {
       cluck "Despite having blob $next_blob->{path}, "
         . "I was unable to load the package manager.";
       next;
     }
+
+    # Skip this file if there are no dependencies.
+    next if not $pkg_mgr->has_dependencies;
 
     # Record the blob
     my $dep_file_id =
@@ -105,41 +108,42 @@ sub trawl_repo_tree {
   my ($self, $tree) = @_;
 
   # call $self->next_package_blob
-  my $pkg_mgr = $self->next_package_blob($tree);
-  return if not $pkg_mgr;
+  while (my $pkg_mgr = $self->next_package_blob($tree)) {
+    return if not $pkg_mgr;
 
-  # Iterate through the dependencies and record them.
-  while (my $next_dep = $pkg_mgr->next_dependency) {
+    # Iterate through the dependencies and record them.
+    while (my $next_dep = $pkg_mgr->next_dependency) {
 
-    # Record the dependencies.
-    my $dep_version_id =
-      $self->{persistence}->upsert_record(
+      # Record the dependencies.
+      my $dep_version_id =
+        $self->{persistence}->upsert_record(
                  'dependency_version',
                  { package_manager => $pkg_mgr->package_manager_details->{name},
                    package_name    => $next_dep->{package},
                    version_string  => $next_dep->{version},
                  }
-      );
-    say <<"EODEBUG";
+        );
+      say <<"EODEBUG";
 Recorded dependency $next_dep->{package} with version $next_dep->{version} as dependency version ID $dep_version_id.
 EODEBUG
-    $self->{persistence}->upsert_record(
+      $self->{persistence}->upsert_record(
                                    'repository_dependency',
                                    { repository      => $tree->{repo_id},
                                      dependency_file => $pkg_mgr->{dep_file_id},
                                      dependency_version => $dep_version_id,
                                    }
-    );
+      );
+    }
   }
 
   return;
 }
 
 sub trawl_all {
-  my ($self) = @_;
+  my ($self, $org) = @_;
 
   # Loop over all of the repository trees
-  while (my $tree = $self->next_repo_tree) {
+  while (my $tree = $self->next_repo_tree($org)) {
     $self->trawl_repo_tree($tree);
   }
 
@@ -148,9 +152,9 @@ sub trawl_all {
 
 # Just return a single repo.
 sub trawl_one {
-  my ($self, $user, $repo) = @_;
+  my ($self, $org, $repo) = @_;
 
-  my $tree = $self->get_tree_for_repo($user, $repo);
+  my $tree = $self->get_repo_tree($org, $repo);
   return if not $tree;
 
   $self->trawl_repo_tree($tree);

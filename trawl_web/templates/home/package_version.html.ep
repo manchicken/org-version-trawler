@@ -7,9 +7,9 @@
 %== chart_init
 % end
 
-<h2>Versions found for <%= unfixname($pkg_name) %> in package manager <%= unfixname($pkg_mgr_name) %></h2>
+<h2>Repositories having package <%= unfixname($pkg_name) %> version <%= unfixname( $pkg_version ) %>.</h2>
 
 %# W000! Charts
-%== dependency_version_chart unfixname($pkg_mgr_name), unfixname($pkg_name)
+%== version_repository_chart unfixname($pkg_mgr_name), unfixname($pkg_name), unfixname($pkg_version)
 
 <em>fin.</em>

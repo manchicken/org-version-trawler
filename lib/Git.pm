@@ -2,7 +2,7 @@ package Git;
 
 use Modern::Perl '2020';
 
-use Carp qw/cluck/;
+use Carp qw/croak cluck/;
 use Syntax::Keyword::Try;
 use Net::GitHub::V3;
 use Data::Dumper;
@@ -29,7 +29,11 @@ sub init {
 sub next_repository {
   my ($self, $opts) = @_;
 
-  my $org = exists $opts->{org} ? $opts->{org} : 'WPMedia';
+  my $org = exists $opts->{org} ? $opts->{org} : $ENV{GITHUB_USER_ORG};
+
+  if (!$org) {
+    croak "No org defined. Please set \$GITHUB_USER_ORG in your environment.";
+  }
 
   return $self->gh->repos->next_org_repo($org);
 }

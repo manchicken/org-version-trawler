@@ -36,3 +36,12 @@ inc/
 
 local
 .vstags
+data/
+
+.tags
+
+.tags1
+
+cli.log
+
+*.log

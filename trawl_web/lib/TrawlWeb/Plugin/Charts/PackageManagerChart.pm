@@ -48,9 +48,7 @@ EOSQL
 __DATA__
 
 @@ package_manager_chart.html.ep
-% sub min_height { my ($x) = @_; $x > 500 ? $x : 500; }
-% my $height = min_height(int($colorCount) * 15);
-<div style="width: 900px; height: <%=$height%>px;"><canvas style="width:900px; height:<%=$height%>px;" id="packageManagerChart"></canvas></div>
+<div style="width: 900px;"><canvas style="width:900px;" id="packageManagerChart"></canvas></div>
 <script>
   const ctx = document.getElementById('packageManagerChart').getContext('2d')
   let chart = new Chart(ctx, {
@@ -73,8 +71,7 @@ __DATA__
         const chartNode = chart.getElementsAtEvent(e)[0]
         window.chartNode = chartNode
         const pkgMgr = <%= $labels %>[chartNode._index] || null;
-        if (chartNode._model.label) document.location.href = '/package_manager/'+pkgMgr;
-        console.log(chartNode._model.label);
+        if (chartNode._model.label) document.location.href = '/package_manager/'+encodeURI(pkgMgr);
       }
     }
   })
