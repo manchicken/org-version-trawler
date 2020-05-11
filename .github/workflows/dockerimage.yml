@@ -11,6 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag org-version-tracker:$(date +%s)
+    - name: Docker Build & Push to GitHub Package
+      uses: opspresso/action-docker@master
+      with:
+        args: --docker
+      env:
+        USERNAME: ${{ secrets.GITHUB_USERNAME }}
+        PASSWORD: ${{ secrets.GITHUB_PERSONAL_TOKEN }}
+        REGISTRY: "docker.pkg.github.com"
+        DOCKERFILE: "Dockerfile"
+        IMAGE_NAME: "org-version-trawler"
+        TAG_NAME: "v0.0.1"
+        LATEST: "true"
