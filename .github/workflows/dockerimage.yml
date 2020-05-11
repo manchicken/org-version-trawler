@@ -11,13 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Docker Build & Push to GitHub Package
-      uses: opspresso/action-docker@master
-      with:
-        args: --docker
-      env:
-        USERNAME: ${{ secrets.PUBLISH_USERNAME }}
-        PASSWORD: ${{ secrets.PUBLISH_TOKEN }}
-        REGISTRY: "docker.pkg.github.com"
-        DOCKERFILE: "Dockerfile"
-        LATEST: "true"
+      - name: Check out
+        uses: actions/checkout@v2.0.0
+
+      - name: Docker Build & Push to GitHub Package
+        uses: opspresso/action-docker@master
+        with:
+          args: --docker
+        env:
+          USERNAME: ${{ secrets.PUBLISH_USERNAME }}
+          PASSWORD: ${{ secrets.PUBLISH_TOKEN }}
+          REGISTRY: "docker.pkg.github.com"
+          DOCKERFILE: "Dockerfile"
+          LATEST: "true"
