@@ -1,0 +1,8 @@
+ -ce
+ -lp
+ -cti=1
+ -vt=1
+ -pt=2
+ -i=2
+ -enc=utf8
+ -pbp

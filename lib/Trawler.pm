@@ -2,15 +2,21 @@ package Trawler;
 
 use Modern::Perl '2020';
 use Carp qw/cluck/;
+use utf8;
+
+# SIGNATURES BOILERPLATE
+## no critic (ProhibitSubroutinePrototypes)
+use feature qw(signatures);
+no warnings qw(experimental::signatures);    ## no critic (ProhibitNoWarnings)
+
+# END SIGNATURES BOILERPLATE
 
 use Git;
 use PackageManager;
 use Persistence;
 
-sub new {
-  my ($pkg, $opts) = @_;
+sub new ($pkg, $opts = {}) {
 
-  $opts ||= {};
   my $self = { %{$opts},
                persistence => Persistence->new(),
                git         => Git->new(),
@@ -22,8 +28,22 @@ sub new {
   return bless $self, $pkg;
 }
 
-sub _record_repo {
-  my ($self, $tree) = @_;
+sub _should_skip_for_incremental_trawl ($self, $tree) {
+
+  my $db = $self->{persistence}->db;
+
+  my $found = $db->select('repository',
+                          ['rowid'],
+                          { name => $tree->{repo}->{name},
+                            org  => $tree->{repo}->{user},
+                            sha  => $tree->{repo}->{sha}
+                          }
+                         )->hash;
+
+  return (exists $found->{rowid} and length $found->{rowid});
+}
+
+sub _record_repo ($self, $tree) {
 
   return if not $tree;
 
@@ -33,7 +53,7 @@ sub _record_repo {
                                             $tree->{repo}->{sha},
                                            );
   say <<"EODEBUG";
-Recorded repository $tree->{repo}->{user}/$tree->{repo}->{name} at «$tree->{repo}->{sha}» as repo ID $repo_id.
+Recorded repository $tree->{repo}->{user}/$tree->{repo}->{name} at <<$tree->{repo}->{sha}>> as repo ID $repo_id!
 EODEBUG
 
   $tree->{repo_id} = $repo_id;
@@ -41,20 +61,28 @@ EODEBUG
   return $tree;
 }
 
-sub get_repo_tree {
-  my ($self, $user, $repo) = @_;
+sub get_repo_tree ($self, $user, $repo) {
 
   return $self->_record_repo($self->{git}->get_tree_for_repo($user, $repo));
 }
 
-sub next_repo_tree {
-  my ($self) = @_;
+sub next_repo_tree ($self, $org, $incremental, $stopper) {
 
-  return $self->_record_repo($self->{git}->get_tree_for_next_repo);
+  while (my $tree = $self->{git}->get_tree_for_next_repo) {
+    last if ($stopper->());
+
+    # For incremental scans, skip trees that we already know about.
+    if ($incremental and $self->_should_skip_for_incremental_trawl($tree)) {
+      next;
+    }
+
+    return $self->_record_repo($tree);
+  }
+
+  return;
 }
 
-sub next_package_blob {
-  my ($self, $tree) = @_;
+sub next_package_blob ($self, $tree) {
 
   # Get the next package manager file.
   while (
@@ -76,7 +104,7 @@ sub next_package_blob {
     # Get the package manager
     my $pkg_mgr = PackageManager->load($next_blob);
     if (not $pkg_mgr) {
-      cluck "Despite having blob $next_blob->{path}, "
+      cluck "🚨Despite having blob $next_blob->{path}, "
         . "I was unable to load the package manager.";
       next;
     }
@@ -104,8 +132,7 @@ EODEBUG
   return;
 }
 
-sub trawl_repo_tree {
-  my ($self, $tree) = @_;
+sub trawl_repo_tree ($self, $tree) {
 
   # call $self->next_package_blob
   while (my $pkg_mgr = $self->next_package_blob($tree)) {
@@ -139,20 +166,21 @@ EODEBUG
   return;
 }
 
-sub trawl_all {
-  my ($self, $org) = @_;
+sub trawl_all ($self, $org, $incremental = 0, $stopper = sub { 0 }) {
 
   # Loop over all of the repository trees
-  while (my $tree = $self->next_repo_tree($org)) {
+  while (my $tree = $self->next_repo_tree($org, $incremental, $stopper)) {
     $self->trawl_repo_tree($tree);
+    last if $stopper->();
   }
+
+  say STDERR "TRAWLER IS FINISHED.";
 
   return;
 }
 
 # Just return a single repo.
-sub trawl_one {
-  my ($self, $org, $repo) = @_;
+sub trawl_one ($self, $org, $repo) {
 
   my $tree = $self->get_repo_tree($org, $repo);
   return if not $tree;

@@ -9,10 +9,14 @@ Readonly my $runtime_matrix => {
                               'nodejs8.10' => [ 'NodeJS', '8.10 (DEPRECATED)' ],
                               'nodejs12.x' => [ 'NodeJS', '12' ],
                               'nodejs10.x' => [ 'NodeJS', '10' ],
+                              'nodejs10.6' => [ 'NodeJS', '10.6' ],
+                              'nodejs6.10' => [ 'NodeJS', '6.10 (INVALID)' ],
                               'python3.8'  => [ 'Python', '3.8' ],
                               'python3.7'  => [ 'Python', '3.7' ],
                               'python3.6'  => [ 'Python', '3.6' ],
                               'python2.7'  => [ 'Python', '2.7' ],
+                              'java8'      => [ 'Java',   '8' ],
+                              'go1.x'      => [ 'Go',     '1' ]
 };
 
 sub package_manager_details {
@@ -59,7 +63,7 @@ sub next_dependency {
   while (scalar @{ $self->{content} }) {
     my $line = shift @{ $self->{content} } || '';
     next if (index($line, ':') < 0);    # No colon, it couldn't be a match.
-    if ($line =~ m/^\s*?Runtime\s*?:\s*(?<runtime>.*?)$/xs) {
+    if ($line =~ m/^\s*?Runtime\s*?:\s*\"?(?<runtime>.*?)\"?$/xs) {
       if (exists $runtime_matrix->{ $+{runtime} }) {
         my $runtime = $runtime_matrix->{ $+{runtime} };
         return { package => $runtime->[0], version => $runtime->[1] };

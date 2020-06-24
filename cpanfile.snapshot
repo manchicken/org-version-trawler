@@ -578,8 +578,8 @@ DISTRIBUTIONS
       URI::db 0.15
       URI::file 4.21
       perl 5.010001
-  Mojolicious-8.33
-    pathname: S/SR/SRI/Mojolicious-8.33.tar.gz
+  Mojolicious-8.55
+    pathname: S/SR/SRI/Mojolicious-8.55.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -648,7 +648,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 8.33
+      Mojolicious 8.55
       Mojolicious::Command undef
       Mojolicious::Command::Author::cpanify undef
       Mojolicious::Command::Author::generate undef
@@ -693,10 +693,8 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       IO::Socket::IP 0.37
-      JSON::PP 2.27103
-      List::Util 1.41
-      Time::Local 1.2
-      perl 5.010001
+      Sub::Util 1.41
+      perl 5.016
   Moo-2.003006
     pathname: H/HA/HAARG/Moo-2.003006.tar.gz
     provides:

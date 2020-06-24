@@ -1,0 +1,31 @@
+% layout 'default';
+% title 'Run the Trawler!';
+
+<h2>Traller Running!</h2>
+
+<h3>Trawler Status</h3>
+<span><%= $msg %></span>
+
+<h3>Stats</h3>
+<table>
+  <tbody>
+    <tr>
+      <td style="font-weight: bold;">Start Time</td>
+      <td><%= $stats->{start_time} %></td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Current duration (sec)</td>
+      <td><%= $stats->{current_duration} %></td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Last duration (sec)</td>
+      <td><%= $stats->{last_run_duration} %></td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Trawler Runs</td>
+      <td><%= $stats->{run_count} %></td>
+    </tr>
+  </tbody>
+</table>
+
+<em>fin.</em>

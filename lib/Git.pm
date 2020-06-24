@@ -1,6 +1,7 @@
 package Git;
 
 use Modern::Perl '2020';
+use utf8;
 
 use Carp qw/croak cluck/;
 use Syntax::Keyword::Try;
@@ -32,7 +33,7 @@ sub next_repository {
   my $org = exists $opts->{org} ? $opts->{org} : $ENV{GITHUB_USER_ORG};
 
   if (!$org) {
-    croak "No org defined. Please set \$GITHUB_USER_ORG in your environment.";
+    croak "🚨No org defined. Please set \$GITHUB_USER_ORG in your environment.";
   }
 
   return $self->gh->repos->next_org_repo($org);

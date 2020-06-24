@@ -1,6 +1,10 @@
 package TrawlWeb;
 use Mojo::Base 'Mojolicious';
 
+use FindBin qw/$Bin/;
+use lib qq{$Bin/../lib};
+use TrawlWeb::Controller::Trawl;
+
 # This method will run once at server start
 sub startup {
   my $self = shift;
@@ -24,8 +28,12 @@ sub startup {
   $r->get('/package_manager/:pkg_mgr_name')->to('home#package_manager');
   $r->get('/package_manager/:pkg_mgr_name/package_name/:pkg_name')
     ->to('home#package_name');
-  $r->get('/package_manager/:pkg_mgr_name/package_name/:pkg_name/version/:pkg_version')
-    ->to('home#package_version');
+  $r->get(
+    '/package_manager/:pkg_mgr_name/package_name/:pkg_name/version/:pkg_version'
+  )->to('home#package_version');
+  $r->get('/trawl')->to('trawl#run');
+
+  return;
 }
 
 1;
