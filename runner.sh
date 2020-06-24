@@ -2,7 +2,7 @@
 
 if [ "$1" = "web" ]; then
   echo "Running web..."
-  carton exec morbo ./trawl_web/script/trawl_web
+  carton exec ./trawl_web/script/trawl_web daemon
 elif [ "$1" = "trawler" ]; then
   echo "Running trawler..."
   BAD=""

@@ -6,7 +6,7 @@
     {
       "label": "Run trawl_web",
       "type": "shell",
-      "command": "carton exec morbo ./trawl_web/script/trawl_web",
+      "command": "carton exec ./trawl_web/script/trawl_web daemon",
       "problemMatcher": []
     },
     {

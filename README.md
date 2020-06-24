@@ -18,8 +18,19 @@
 
 There are two programs in this package:
 
-1. The trawler
-2. The web app
+1. The web app
+2. The trawler
+
+You can start the web-app to start digging in to the data. This can either be started on the command-line, or from within VS Code.
+
+To start with VS Code, use "Tasks: Run Task," and then "Run trawl_web".
+
+To start with the command-line, run the following.
+
+```sh
+carton exec ./trawl_web/script/trawl_web daemon
+```
+
 
 The web app uses data produced by the trawler, so run that first. It will take a _long_ time (hours, not days) as it trawls through all of the repositories. Github rate-limits things, this definitely slows things down.
 
@@ -27,16 +38,6 @@ The web app uses data produced by the trawler, so run that first. It will take a
 
 ```sh
 carton exec perl ./bin/trawl.pl
-```
-
-Once the trawler has finished, you can start the web-app to start digging in to the data. This can either be started on the command-line, or from within VS Code.
-
-To start with VS Code, use "Tasks: Run Task," and then "Run trawl_web".
-
-To start with the command-line, run the following.
-
-```sh
-carton exec morbo ./trawl_web/script/trawl_web
 ```
 
 ## TODO
