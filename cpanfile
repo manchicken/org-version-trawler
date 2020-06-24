@@ -1,6 +1,6 @@
 requires 'Net::GitHub',          '>= 0.96';
 requires 'Mojo::SQLite',         '>= 3.003';
-requires 'Mojolicious',          '>= 8.33';
+requires 'Mojolicious',          '>= 8.55';
 requires 'Modern::Perl',         '>= 1.20200211';
 requires 'MIME::Base64',         '>= 3.15';
 requires 'Readonly',             '>= 2.05';

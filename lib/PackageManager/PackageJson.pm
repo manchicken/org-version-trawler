@@ -9,7 +9,7 @@ use PackageManager::Util qw/get_semver_from_string/;
 
 sub package_manager_details {
   return { name => 'npm|yarn',
-           re   => qr/(^|\/)package\.json$/ix
+           re   => qr/^(?!.*?\/node_modules.*?\/).*?\/?package\.json$/ix
          };
 }
 
@@ -34,7 +34,7 @@ sub parse {
     $self->extract_deps($obj, 'peerDependencies');
     $self->extract_deps($obj, 'optionalDependencies');
   } catch {
-    my ($err) = @_;
+    my $err = shift;
 
     say "Error parsing file: $err";
   };
