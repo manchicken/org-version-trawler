@@ -2,6 +2,7 @@ package Trawler;
 
 use Modern::Perl '2020';
 use Carp qw/cluck/;
+use utf8;
 
 # SIGNATURES BOILERPLATE
 ## no critic (ProhibitSubroutinePrototypes)
@@ -103,7 +104,7 @@ sub next_package_blob ($self, $tree) {
     # Get the package manager
     my $pkg_mgr = PackageManager->load($next_blob);
     if (not $pkg_mgr) {
-      cluck "Despite having blob $next_blob->{path}, "
+      cluck "🚨Despite having blob $next_blob->{path}, "
         . "I was unable to load the package manager.";
       next;
     }
