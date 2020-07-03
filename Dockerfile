@@ -27,5 +27,4 @@ COPY runner.sh runner.sh
 
 EXPOSE 3000/tcp
 
-# Set the entry-point to the runner.
-ENTRYPOINT [ "./runner.sh" ]
+CMD ["carton", "exec", "./trawl_web/script/trawl_web", "daemon"]
