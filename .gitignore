@@ -45,3 +45,4 @@ data/
 cli.log
 
 *.log
+queries.sql
