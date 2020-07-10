@@ -10,9 +10,9 @@ sub render {
 
   # We need all of these values!
   if (not $package_manager or not $package_name or not $package_version) {
-    say "Missing one of \$package_manager «$package_manager», "
-      . "\$package_name «$package_name», "
-      . "or \$package_version «$package_version»";
+    say "Missing one of \$package_manager <<$package_manager>>, "
+      . "\$package_name <<$package_name>>, "
+      . "or \$package_version <<$package_version>>";
     return;
   }
 
@@ -26,15 +26,20 @@ sub render {
 select
   r.name,
   r.org,
-  r.sha
+  r.sha,
+  df.path,
+  df.package_manager
 from
   dependency_version dv
 join
   repository_dependency rd
     on (rd.dependency_version=dv.rowid)
 join
+  dependency_file df
+    on (rd.dependency_file=df.rowid)
+join
   repository r
-    on (r.rowid=rd.repository)
+    on (r.rowid=df.repository)
 where
   dv.package_manager = ?
 and
@@ -42,9 +47,9 @@ and
 and
   dv.version_string = ?
 group by
-  r.org, r.name, r.sha
+  r.org, r.name, r.sha, df.package_manager, df.path
 order by
-  r.org, r.name
+  r.org, r.name, df.path, df.package_manager
 ;
 EOSQL
 
@@ -54,7 +59,8 @@ EOSQL
       { name => $result->{name},
         org  => $result->{org},
         sha  => $result->{sha},
-        repo => join('/', $result->{org}, $result->{name})
+        repo => join('/', $result->{org}, $result->{name}),
+        path => $result->{path},
       };
   }
 
@@ -92,6 +98,7 @@ const onClickFunc = (pkgName) => {
       <th style="border:1px solid black;">Name</th>
       <th style="border:1px solid black;">Repository</th>
       <th style="border:1px solid black;">Commit SHA</th>
+      <th style="border:1px solid black;">File Path</th>
     </tr>
   </thead>
   <tbody>
@@ -104,6 +111,12 @@ const onClickFunc = (pkgName) => {
         <a
           href="https://github.com/<%= $item->{repo} %>/tree/<%= $item->{sha} %>" target="_blank">
           <%= $item->{sha} %>
+        </a>
+      </td>
+      <td style="border:1px solid black;">
+        <a
+          href="https://github.com/<%= $item->{repo} %>/blob/<%= $item->{sha} %>/<%= $item->{path} %>" target="_blank">
+          <%= $item->{path} %>
         </a>
       </td>
     </tr>

@@ -22,7 +22,6 @@ where
   package_manager = ?
 group by
   package_name
-  having count(1) > 1
 order by
   popularity desc,
   package_name asc
@@ -90,7 +89,7 @@ const onClickFunc = (pkgName) => {
 
 @@ dependency_popularity_chart.html.ep
 % use TrawlWeb::Util qw/min_height/;
-% my $height = min_height(int($colorCount) * 15);
+% my $height = min_height(int($colorCount) * 35);
 <p>This chart shows all of the dependencies for <%= $package_manager %> having two or more consumers, sorted by popularity (irrespective of version) across all repositories, in descending order. For a full list of dependencies used in this package manager, SEE HERE(TODO).</p>
 <div style="width: 900px; height: <%=$height%>px;"><canvas style="width:900px; height:<%=$height%>px;" id="dependencyPopularityChart"></canvas></div>
 <script>

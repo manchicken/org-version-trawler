@@ -16,14 +16,14 @@ sub render {
 
   my $results = $chart->db->query(<<'EOSQL');
 select
-  count(1) as popularity,
-  package_manager
+  count(dv.package_name) as popularity,
+  dv.package_manager
 from
-  dependency_file
+  dependency_version dv
 group by
-  package_manager
+  dv.package_manager
 order by
-  package_manager asc
+  dv.package_manager asc
 ;
 EOSQL
 
