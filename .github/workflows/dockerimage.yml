@@ -17,8 +17,8 @@ jobs:
         with:
           args: --docker
         env:
-          USERNAME: ${{ secrets.PUBLISH_USERNAME }}
-          PASSWORD: ${{ secrets.PUBLISH_TOKEN }}
+          USERNAME: ${{ secrets.DOCKERHUB_USER_NAME }}
+          PASSWORD: ${{ secrets.DOCKERHUB_ACCESS_KEY }}
           DOCKERFILE: "Dockerfile"
           TAG_NAME: "v0.0.1-beta1"
           LATEST: "true"
