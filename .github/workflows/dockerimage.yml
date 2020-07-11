@@ -20,5 +20,6 @@ jobs:
           USERNAME: ${{ secrets.DOCKERHUB_USER_NAME }}
           PASSWORD: ${{ secrets.DOCKERHUB_ACCESS_KEY }}
           DOCKERFILE: "Dockerfile"
+          IMAGE_NAME: "washpost/org-version-trawler"
           TAG_NAME: "v0.0.1-beta2"
           LATEST: "true"
