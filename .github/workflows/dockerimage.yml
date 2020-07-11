@@ -19,7 +19,6 @@ jobs:
         env:
           USERNAME: ${{ secrets.PUBLISH_USERNAME }}
           PASSWORD: ${{ secrets.PUBLISH_TOKEN }}
-          REGISTRY: "docker.pkg.github.com"
           DOCKERFILE: "Dockerfile"
           TAG_NAME: "v0.0.1-beta1"
           LATEST: "true"
