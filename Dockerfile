@@ -27,4 +27,4 @@ RUN rm -rf /app/startup-data
 EXPOSE 3000/tcp
 
 # Set the entry-point to the runner.
-ENTRYPOINT [ "./runner.sh" ]
+CMD [ "./runner.sh", "web" ]
