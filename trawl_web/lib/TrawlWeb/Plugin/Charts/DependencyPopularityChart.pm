@@ -5,7 +5,7 @@ use Mojo::JSON qw/encode_json/;
 use Mojo::Util qw/url_escape/;
 use Readonly;
 
-Readonly my $MAX_CHART_LENGTH => 1024;
+Readonly my $MAX_CHART_LENGTH => 512;
 
 sub render {
   my ($chart, $c, $package_manager) = @_;
