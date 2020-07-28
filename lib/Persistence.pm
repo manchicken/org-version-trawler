@@ -23,7 +23,8 @@ sub sql {
   my ($self) = @_;
 
   if (!exists $self->{_sql}) {
-    $self->{_sql} = Mojo::SQLite->new($TrawlerConfig::SQL_FILE);
+    $self->{_sql} = Mojo::SQLite->new($TrawlerConfig::SQL_FILE)
+      ->options({ AutoCommit => 1, RaiseError => 1 });
     Persistence::Startup->startup($self->{_sql});
   }
   return $self->{_sql};

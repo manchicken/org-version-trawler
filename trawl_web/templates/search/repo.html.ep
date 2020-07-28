@@ -1,0 +1,41 @@
+% layout 'default';
+% title 'Search Results!';
+
+% content_for head_tag => begin
+%== chart_init
+% end
+
+<h2>Search Results!</h2>
+
+<h2>Search for a Repository</h2>
+%= form_for '/search/repo' => (method => q/POST/) => begin
+  %= csrf_field
+  %= label_for repo_name => 'Search for a Repo:'
+  %= search_field repo_name => '', id=>'repo_name'
+  %= submit_button
+% end
+
+% if ( 0 < length $message) {
+<strong><%= $message =%></strong>
+% }
+% if ( 0 < scalar @{$results} ) {
+  <h2>Results</h2>
+  <table class="chart">
+    <thead>
+      <tr>
+        <th>Org</th>
+        <th>Name</th>
+        <th>SHA</th>
+      </tr>
+    </thead>
+    <tbody>
+      % for my $result (@{$results}) {
+        <tr>
+          <td><code><%= $result->{org} %></code></td>
+          <td><code><%= $result->{name} %></code></td>
+          <td><code><%= $result->{sha} %></code></td>
+        </tr>
+      % }
+    </tbody>
+  </table>
+% }

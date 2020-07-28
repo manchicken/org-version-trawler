@@ -11,5 +11,3 @@
 
 %# W000! Charts
 %== dependency_popularity_chart unfixname($pkg_mgr_name)
-
-<em>fin.</em>

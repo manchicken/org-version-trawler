@@ -12,6 +12,10 @@ sub startup {
   # Load configuration from hash returned by config file
   my $config = $self->plugin('Config');
 
+  # Load the TagHelpers...
+  $self->plugin('DefaultHelpers');
+  $self->plugin('TagHelpers');
+
   # Load the Charts plugin
   $self->plugin('TrawlWeb::Plugin::Charts', {});
   $self->defaults(breadcrumbs => []);
@@ -32,6 +36,7 @@ sub startup {
     '/package_manager/:pkg_mgr_name/package_name/:pkg_name/version/:pkg_version'
   )->to('home#package_version');
   $r->get('/trawl')->to('trawl#run');
+  $r->post('/search/repo')->to('search#repo');
 
   return;
 }

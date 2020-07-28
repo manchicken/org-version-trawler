@@ -1,0 +1,134 @@
+/*
+Palette
+- #ffffff
+- #ffca00
+- #ff6732
+- #00f2ff
+- #2a2f3d 
+ */
+
+* {
+  font-family: Verdana, Geneva, sans-serif;
+  /* margin: 0px; */
+}
+
+/** Basic element styles */
+
+a {
+  color: #ff6732;
+}
+
+code {
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: smaller;
+  line-height: 1.2;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+/** We use tables for some of the chart stuff. These are those styles. */
+
+table.chart {
+  border-spacing: 0px;
+  border: 0px;
+  border: 0.5px solid #2a2f3d;
+}
+th,
+td {
+  border: 0.5px solid #2a2f3d;
+  padding: 4px;
+  font-size: smaller;
+}
+tr.linkish td,
+td.linkish {
+  color: #ff6732;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+th {
+  background: #ffca00;
+  font-weight: bold;
+  text-align: left;
+}
+.numeric {
+  text-align: right;
+}
+
+/** Breadcrumbs. */
+
+#breadcrumbs > ol {
+  list-style-type: none;
+  padding-left: 0;
+  padding-inline-start: 0px;
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+}
+
+#breadcrumbs > ol > li {
+  display: inline-block;
+}
+
+#breadcrumbs > ol > li a::after {
+  display: inline-block;
+  content: ">";
+  font-size: 80%;
+  font-weight: bold;
+  padding: 0 3px;
+}
+
+/** Navigational elements. */
+
+html {
+  height: 100%;
+  align-content: center;
+  background-color: #2a2f3d;
+}
+
+body {
+  align-self: center;
+  margin: auto;
+  background-color: #f3f3f3;
+  color: #2a2f3d;
+}
+
+header {
+  padding: 4px 0px;
+  margin: 0px;
+  text-transform: uppercase;
+  padding: 4px;
+  background: #2a2f3d;
+  color: #f9f9f9;
+}
+
+nav {
+  padding-left: 8px;
+  line-height: 3;
+  background: #ffca00;
+}
+nav > ol > li > a {
+  color: #2a2f3d;
+}
+
+section {
+  padding: 4px;
+  margin: 10px;
+}
+
+footer {
+  height: 100%;
+  font-size: smaller;
+  padding: 4px;
+  background: #2a2f3d;
+  color: #fcfcfc;
+}
+
+footer > div {
+  width: 50%;
+  margin: auto;
+}
+
+.chart-title {
+  font-size: large;
+  line-height: 2;
+}

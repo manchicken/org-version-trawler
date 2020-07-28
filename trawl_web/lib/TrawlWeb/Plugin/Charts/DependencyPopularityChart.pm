@@ -64,24 +64,23 @@ __DATA__
 
 @@ dependency_popularity_table.html.ep
 # This is for use when the list of dependencies is just too big to fit into a browser.
-<p>This chart shows all of the dependencies for <%= $package_manager %> having two or more consumers, sorted by popularity (irrespective of version) across all repositories, in descending order. For a full list of dependencies used in this package manager, SEE HERE(TODO).</p>
 <script>
 const onClickFunc = (pkgName) => {
   if (pkgName) document.location.href = '/package_manager/<%= $package_manager %>/package_name/'+fixpath(pkgName);
 }
 </script>
-<table style="border-spacing: 0px; width: 900px; border: 1px solid black;">
+<table class="chart">
   <thead>
     <tr>
-      <th style="border:1px solid black;">Name</th>
-      <th style="border:1px solid black;">Count</th>
+      <th>Name</th>
+      <th>Count</th>
     </tr>
   </thead>
   <tbody>
     % for my $item (@$items) {
-    <tr style="color: blue; text-decoration: underline" onclick="onClickFunc('<%= $item->{label} %>')">
-      <td style="border:1px solid black;"><%= $item->{label} %></td>
-      <td style="border:1px solid black;"><%= $item->{count} %></td>
+    <tr class="linkish" onclick="onClickFunc('<%= $item->{label} %>')">
+      <td><%= $item->{label} %></td>
+      <td><%= $item->{count} %></td>
     </tr>
     % }
   </tbody>
@@ -90,7 +89,6 @@ const onClickFunc = (pkgName) => {
 @@ dependency_popularity_chart.html.ep
 % use TrawlWeb::Util qw/min_height/;
 % my $height = min_height(int($colorCount) * 35);
-<p>This chart shows all of the dependencies for <%= $package_manager %> having two or more consumers, sorted by popularity (irrespective of version) across all repositories, in descending order. For a full list of dependencies used in this package manager, SEE HERE(TODO).</p>
 <div style="width: 900px; height: <%=$height%>px;"><canvas style="width:900px; height:<%=$height%>px;" id="dependencyPopularityChart"></canvas></div>
 <script>
   const ctx = document.getElementById('dependencyPopularityChart').getContext('2d')

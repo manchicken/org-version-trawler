@@ -84,36 +84,28 @@ EOSQL
 __DATA__
 
 @@ version_repository_chart.html.ep
-<p>This chart shows all of the dependencies for <%= $package_manager %> having two or more consumers, sorted by popularity (irrespective of version) across all repositories, in descending order. For a full list of dependencies used in this package manager, SEE HERE(TODO).</p>
 <script>
 const onClickFunc = (pkgName) => {
   return; // Nothing here yet.
 //  if (pkgName) document.location.href = '/package_manager/<%= $package_manager %>/package_name/'+fixpath(pkgName);
 }
 </script>
-<table style="border-spacing: 0px; width: 900px; border: 1px solid black;">
+<table class="chart">
   <thead>
     <tr>
-      <th style="border:1px solid black;">Org</th>
-      <th style="border:1px solid black;">Name</th>
-      <th style="border:1px solid black;">Repository</th>
-      <th style="border:1px solid black;">Commit SHA</th>
-      <th style="border:1px solid black;">File Path</th>
+      <th>Org</th>
+      <th>Name</th>
+      <th>Repository</th>
+      <th>File Path</th>
     </tr>
   </thead>
   <tbody>
     % for my $item (@$repos) {
     <tr style="">
-      <td style="border:1px solid black;"><%= $item->{org} %></td>
-      <td style="border:1px solid black;"><%= $item->{name} %></td>
-      <td style="border:1px solid black;"><%= $item->{repo} %></td>
-      <td style="border:1px solid black;">
-        <a
-          href="https://github.com/<%= $item->{repo} %>/tree/<%= $item->{sha} %>" target="_blank">
-          <%= $item->{sha} %>
-        </a>
-      </td>
-      <td style="border:1px solid black;">
+      <td><%= $item->{org} %></td>
+      <td><%= $item->{name} %></td>
+      <td><%= $item->{repo} %></td>
+      <td>
         <a
           href="https://github.com/<%= $item->{repo} %>/blob/<%= $item->{sha} %>/<%= $item->{path} %>" target="_blank">
           <%= $item->{path} %>

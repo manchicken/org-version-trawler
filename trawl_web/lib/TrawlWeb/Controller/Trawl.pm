@@ -130,7 +130,9 @@ sub run ($self) {
   return $self->run_subprocess;
 }
 
-# Start things off!
-TrawlWeb::Controller::Trawl->set_timer;
+# Start things off! (unless trawler is disabled.)
+if (not exists $ENV{DISABLE_TRAWLER}) {
+  TrawlWeb::Controller::Trawl->set_timer;
+}
 
 1;
