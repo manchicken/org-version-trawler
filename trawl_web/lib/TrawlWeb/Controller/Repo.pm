@@ -63,7 +63,7 @@ sub get_package_manager_files ($self) {
 
   # Make sure that this is legit
   if (not $repo_deets or not exists $repo_deets->{name}) {
-    return $self->render(message => 'No such repository.', status => 403);
+    return $self->render(message => 'No such repository.', status => 404);
   }
 
   $self->stash(
@@ -121,7 +121,7 @@ sub get_package_manager($self) {
 
   # Make sure that this is legit
   if (not $repo_deets or not exists $repo_deets->{name}) {
-    return $self->render(message => 'No such repository.', status => 403);
+    return $self->render(message => 'No such repository.', status => 404);
   }
 
   # Update breadcrumbs.
