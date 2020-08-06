@@ -3,8 +3,6 @@ package TrawlWeb::Plugin::Charts::DependencyVersionChart;
 use Modern::Perl '2020';
 use Mojo::JSON qw/encode_json/;
 
-use PackageManager::Util qw/sort_semver/;
-
 sub render {
   my ($chart, $c, $package_manager, $package_name) = @_;
 
@@ -66,7 +64,6 @@ __DATA__
 @@ dependency_version_chart.html.ep
 % use TrawlWeb::Util qw/min_height/;
 % my $height = min_height(int($colorCount) * 15);
-<p>This chart shows all of the versions for the <em><%= $package_name %></em> dependency in the <em><%= $package_manager %></em> package manager.</p>
 <div style="width: 900px; height: <%=$height%>px;"><canvas style="width:900px; height:<%=$height%>px;" id="dependencyVersionChart"></canvas></div>
 <script>
   const ctx = document.getElementById('dependencyVersionChart').getContext('2d')

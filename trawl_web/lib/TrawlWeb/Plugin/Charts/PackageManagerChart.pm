@@ -27,20 +27,12 @@ order by
 ;
 EOSQL
 
-  my @labels = ();
-  my @data   = ();
+  my $managers = {};
   while (my $result = $results->hash) {
-    push @labels, $result->{package_manager};
-    push @data,   $result->{popularity};
+    $managers->{ $result->{package_manager} } = $result->{popularity};
   }
 
-  return
-    $mt->render($chart_content,
-                { labels     => encode_json(\@labels),
-                  data       => encode_json(\@data),
-                  colorCount => scalar @data,
-                }
-               );
+  return $mt->render($chart_content, { package_managers => $managers });
 }
 
 1;
@@ -48,31 +40,24 @@ EOSQL
 __DATA__
 
 @@ package_manager_chart.html.ep
-<div style="width: 900px;"><canvas style="width:900px;" id="packageManagerChart"></canvas></div>
 <script>
-  const ctx = document.getElementById('packageManagerChart').getContext('2d')
-  let chart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: <%= $labels %>,
-      datasets: [{
-        label: 'Package Manager',
-        data: <%= $data %>,
-        backgroundColor: getChartColors(<%= $colorCount %>),
-      }]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          ticks: { beginAtZero: true }
-        }]
-      },
-      onClick: (e) => {
-        const chartNode = chart.getElementsAtEvent(e)[0]
-        window.chartNode = chartNode
-        const pkgMgr = <%= $labels %>[chartNode._index] || null;
-        if (chartNode._model.label) document.location.href = '/package_manager/'+encodeURI(pkgMgr);
-      }
-    }
-  })
+const onClick = onClickMaker`/package_manager/${''}`
 </script>
+
+<table class="chart">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    % for my $package_manager (sort keys %{$package_managers}) {
+      % my $count = $package_managers->{$package_manager};
+    <tr class="linkish" onclick="onClick(fixpath('<%= $package_manager %>'))">
+      <td><%= $package_manager %></td>
+      <td class="numeric"><%= $count %></td>
+    </tr>
+    % }
+  </tbody>
+</table>

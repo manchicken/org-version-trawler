@@ -1,0 +1,32 @@
+% use Mojo::Util qw/url_escape/;
+% layout 'default';
+% title "Repo: $repo_org/$repo_name";
+
+
+<h2>Repository: <%= "$repo_org/$repo_name" =%></h2>
+
+<h2>Search for another Repository</h2>
+%= form_for '/search/repo' => (method => q/GET/, class => 'search-form') => begin
+  %= label_for terms => 'Search for a Repo:'
+  %= search_field terms => '', id=>'terms'
+  %= submit_button
+% end
+
+% if ( 0 < length $message) {
+  <strong><%= $message =%></strong>
+% }
+% if ( 0 < scalar %{$results} ) {
+  <h2>Results</h2>
+  <ul class="packages">
+    % for my $pkg_name (sort keys %{$results} ) {
+      <li>
+        <code><%= $pkg_name =%></code>
+        <ul class="versions">
+          % for my $version (@{$results->{$pkg_name}}) {
+            <li><code><%= $version =%></code></li>
+          % }
+        </ul>
+      </li>
+    % }
+  </ul>
+% }

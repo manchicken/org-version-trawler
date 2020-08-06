@@ -1,15 +1,13 @@
 % layout 'default';
 % title 'Charts!';
-% use TrawlWeb::Util qw/unfixname/;
+% use Mojo::Util qw/url_unescape/;
 
 %# This is the initialization of the chart; it sticks the JavaScript in the header.
 % content_for head_tag => begin
 %== chart_init
 % end
 
-<h2>Repositories having package <%= unfixname($pkg_name) %> version <%= unfixname( $pkg_version ) %>.</h2>
+<h2>Repositories having package <%= url_unescape($pkg_name) %> version <%= url_unescape( $pkg_version ) %>.</h2>
 
 %# W000! Charts
-%== version_repository_chart unfixname($pkg_mgr_name), unfixname($pkg_name), unfixname($pkg_version)
-
-<em>fin.</em>
+%== version_repository_chart url_unescape($pkg_mgr_name), url_unescape($pkg_name), url_unescape($pkg_version)

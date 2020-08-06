@@ -35,6 +35,9 @@ sub get_semver_from_string {
 sub sort_semver {
   my ($a, $b) = @_;
 
+  $a ||= 'unknown';
+  $b ||= 'unknown';
+
   # In case these aren't semantic versions...
   if ($a !~ $SEMANTIC_VERSION_RE or $b !~ $SEMANTIC_VERSION_RE) {
     return $a cmp $b;
@@ -42,6 +45,7 @@ sub sort_semver {
 
   my $get_vers_list = sub {
     my ($str) = @_;
+    $str =~ s/[^\d.]+//gsmx;
     my ($nums, $mods) = split /-/x, $str, 2;
     my ($major, $minor, $patch) = split /\./x, $nums, 3;
     $major = (not defined $major or $major eq '') ? 0 : int($major);
@@ -56,9 +60,7 @@ sub sort_semver {
 
   for my $vers_idx (0 .. 2) {
     if ($a_vers[$vers_idx] != $b_vers[$vers_idx]) {
-
-      # Descending sort!
-      return $b_vers[$vers_idx] - $a_vers[$vers_idx];
+      return $a_vers[$vers_idx] - $b_vers[$vers_idx];
     }
   }
 

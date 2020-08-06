@@ -7,6 +7,12 @@
 
 <h2>Package Manager Chart</h2>
 
-%== package_manager_chart
+<h2>Search for a Repository</h2>
+%= form_for '/search/repo' => (method => q/GET/, class => 'search-form') => begin
+  %= label_for terms => 'Search for a Repo:'
+  %= search_field terms => '', id=>'terms'
+  %= submit_button
+% end
 
-<em>fin.</em>
+<h2>Browse Package Managers</h2>
+%== package_manager_chart

@@ -29,19 +29,30 @@ The web app uses data produced by the trawler, so run that first. It will take a
 carton exec perl ./bin/trawl.pl
 ```
 
-Once the trawler has finished, you can start the web-app to start digging in to the data. This can either be started on the command-line, or from within VS Code.
+**NOTE**: It is not necessary to run the trawler separately. The trawler will run automatically along-side the web server.
 
 To start with VS Code, use "Tasks: Run Task," and then "Run trawl_web".
 
 To start with the command-line, run the following.
 
 ```sh
-carton exec morbo ./trawl_web/script/trawl_web
+./runner.sh
 ```
+
+This will automatically start the trawler in a subprocess of the web process. If you would prefer _not_ to run the trawler, set the `DEBUG` env variable to `2`.
+
+```sh
+DEBUG=2 ./runner.sh
+```
+
+Using `DEBUG=2` will not only disable the trawler, but it'll also have `morbo` watch all of the directories involved so that when you make UI changes it automatically updates.
 
 ## TODO
 
-- Add incremental support for trawlers, so that we can skip the repos which have already been trawled at their current commit.
 - Add the ability to trigger a repository for trawling from within the web app.
 - Java Maven `pom.xml` file support (most important!).
-- Deploy into AWS infrastructure somewhere.
+- Allow for the database to be uploaded to S3, or otherwise solve the problem where the DB doesn't survive the container.
+
+## AUTHOR
+
+- Mike Stemle, Jr. <themanchicken@gmail.com> (original author, maintainer)

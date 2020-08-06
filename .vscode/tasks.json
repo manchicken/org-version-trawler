@@ -6,13 +6,7 @@
     {
       "label": "Run trawl_web",
       "type": "shell",
-      "command": "carton exec morbo ./trawl_web/script/trawl_web",
-      "problemMatcher": []
-    },
-    {
-      "label": "Run the trawler",
-      "type": "shell",
-      "command": "carton exec perl ./bin/trawl.pl",
+      "command": "DEBUG=1 ./runner.sh",
       "problemMatcher": []
     }
   ]

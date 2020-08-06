@@ -21,6 +21,7 @@ sub register {
   $self->{_refs} = { app  => $app,
                      conf => $conf,
                    };
+  $self->db;
 
   $self->register_helpers($app);
 
@@ -58,17 +59,19 @@ sub register_helpers {
                                                                       @_);
     }
   );
+
+  return;
 }
 
 # Function to grab and cache the DB handle
 sub db {
   my ($self) = @_;
 
-  if (!exists $self->{persistence}) {
-    $self->{persistence} = Persistence->new;
+  if (!exists $self->{_refs}->{app}->{persistence}) {
+    $self->{_refs}->{app}->{persistence} = Persistence->new;
   }
 
-  return $self->{persistence}->db;
+  return $self->{_refs}->{app}->{persistence}->db;
 }
 
 sub print_boilerplate {
