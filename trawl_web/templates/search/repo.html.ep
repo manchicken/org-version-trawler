@@ -2,16 +2,18 @@
 % title 'Search Results!';
 
 % content_for head_tag => begin
-%== chart_init
+<script defer="defer">
+  const onOrgRepoClick =
+    onClickMaker`/repo/${''}/package_manager_files`;
+</script>
 % end
 
 <h2>Search Results!</h2>
 
 <h2>Search for a Repository</h2>
-%= form_for '/search/repo' => (method => q/POST/) => begin
-  %= csrf_field
-  %= label_for repo_name => 'Search for a Repo:'
-  %= search_field repo_name => '', id=>'repo_name'
+%= form_for '/search/repo' => (method => q/GET/, class => 'search-form') => begin
+  %= label_for terms => 'Search for a Repo:'
+  %= search_field terms => '', id=>'terms'
   %= submit_button
 % end
 
@@ -30,7 +32,7 @@
     </thead>
     <tbody>
       % for my $result (@{$results}) {
-        <tr>
+        <tr class="linkish" onClick="onOrgRepoClick(<%= $result->{rowid} =%>)">
           <td><code><%= $result->{org} %></code></td>
           <td><code><%= $result->{name} %></code></td>
           <td><code><%= $result->{sha} %></code></td>

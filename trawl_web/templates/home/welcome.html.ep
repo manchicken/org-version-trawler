@@ -8,10 +8,9 @@
 <h2>Package Manager Chart</h2>
 
 <h2>Search for a Repository</h2>
-%= form_for '/search/repo' => (method => q/POST/) => begin
-  %= csrf_field
-  %= label_for repo_name => 'Search for a Repo:'
-  %= search_field repo_name => '', id=>'repo_name'
+%= form_for '/search/repo' => (method => q/GET/, class => 'search-form') => begin
+  %= label_for terms => 'Search for a Repo:'
+  %= search_field terms => '', id=>'terms'
   %= submit_button
 % end
 

@@ -3,8 +3,6 @@ package TrawlWeb::Plugin::Charts::DependencyVersionChart;
 use Modern::Perl '2020';
 use Mojo::JSON qw/encode_json/;
 
-use PackageManager::Util qw/sort_semver/;
-
 sub render {
   my ($chart, $c, $package_manager, $package_name) = @_;
 

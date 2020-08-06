@@ -41,9 +41,7 @@ __DATA__
 
 @@ package_manager_chart.html.ep
 <script>
-const onClickFunc = (pkgMgrName) => {
-  if (pkgMgrName) document.location.href = '/package_manager/'+fixpath(pkgMgrName);
-}
+const onClick = onClickMaker`/package_manager/${''}`
 </script>
 
 <table class="chart">
@@ -56,7 +54,7 @@ const onClickFunc = (pkgMgrName) => {
   <tbody>
     % for my $package_manager (sort keys %{$package_managers}) {
       % my $count = $package_managers->{$package_manager};
-    <tr class="linkish" onclick="onClickFunc('<%= $package_manager %>')">
+    <tr class="linkish" onclick="onClick(fixpath('<%= $package_manager %>'))">
       <td><%= $package_manager %></td>
       <td class="numeric"><%= $count %></td>
     </tr>

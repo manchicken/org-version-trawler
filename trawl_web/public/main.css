@@ -55,6 +55,19 @@ th {
   text-align: right;
 }
 
+/** Form elements */
+
+.search-form input {
+  border: 1px solid #2a2f3d;
+}
+
+.search-form > input[type="button"],
+.search-form > input[type="submit"] {
+  background-color: #ffca00;
+  font-weight: bolder;
+  padding: 1px 6px;
+}
+
 /** Breadcrumbs. */
 
 #breadcrumbs > ol {
@@ -131,4 +144,9 @@ footer > div {
 .chart-title {
   font-size: large;
   line-height: 2;
+}
+
+ul.packages > li > code {
+  font-weight: bold;
+  font-size: large;
 }

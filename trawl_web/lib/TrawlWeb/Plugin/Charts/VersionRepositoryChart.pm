@@ -3,8 +3,6 @@ package TrawlWeb::Plugin::Charts::VersionRepositoryChart;
 use Modern::Perl '2020';
 use Mojo::JSON qw/encode_json/;
 
-use PackageManager::Util qw/sort_semver/;
-
 sub render {
   my ($chart, $c, $package_manager, $package_name, $package_version) = @_;
 
@@ -24,6 +22,7 @@ sub render {
   my $results = $chart->db->query(
                                    <<'EOSQL', $package_manager, $package_name, $package_version);
 select
+  r.rowid,
   r.name,
   r.org,
   r.sha,
@@ -56,11 +55,12 @@ EOSQL
   my @repos = ();
   while (my $result = $results->hash) {
     push @repos,
-      { name => $result->{name},
-        org  => $result->{org},
-        sha  => $result->{sha},
-        repo => join('/', $result->{org}, $result->{name}),
-        path => $result->{path},
+      { name  => $result->{name},
+        org   => $result->{org},
+        sha   => $result->{sha},
+        repo  => join('/', $result->{org}, $result->{name}),
+        path  => $result->{path},
+        rowid => $result->{rowid},
       };
   }
 
@@ -104,7 +104,7 @@ const onClickFunc = (pkgName) => {
     <tr style="">
       <td><%= $item->{org} %></td>
       <td><%= $item->{name} %></td>
-      <td><%= $item->{repo} %></td>
+      <td><a href="/repo/<%= $item->{rowid} =%>/package_manager_files?ref=back"><%= $item->{repo} %></a></td>
       <td>
         <a
           href="https://github.com/<%= $item->{repo} %>/blob/<%= $item->{sha} %>/<%= $item->{path} %>" target="_blank">
