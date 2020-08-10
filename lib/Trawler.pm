@@ -51,6 +51,7 @@ sub _record_repo ($self, $tree) {
     $self->{persistence}->upsert_repository($tree->{repo}->{user},
                                             $tree->{repo}->{name},
                                             $tree->{repo}->{sha},
+                                            $tree->{repo}->{metadata},
                                            );
   say <<"EODEBUG";
 Recorded repository $tree->{repo}->{user}/$tree->{repo}->{name} at <<$tree->{repo}->{sha}>> as repo ID $repo_id!

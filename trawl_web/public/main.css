@@ -4,7 +4,7 @@ Palette
 - #ffca00
 - #ff6732
 - #00f2ff
-- #2a2f3d 
+- #2a2f3d
  */
 
 * {
@@ -112,6 +112,11 @@ header {
   padding: 4px;
   background: #2a2f3d;
   color: #f9f9f9;
+}
+
+header > h1 > a {
+  text-decoration: none;
+  color: inherit;
 }
 
 nav {

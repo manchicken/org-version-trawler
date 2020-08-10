@@ -30,6 +30,11 @@ sub package_manager {
                               ]
               );
 
+  # Load the chart data...
+  $self->stash(
+         chart_data => $self->charts->dependency_popularity_chart($pkg_mgr_name)
+           || {});
+
   return $self->stash(pkg_mgr_name => $pkg_mgr_name);
 }
 

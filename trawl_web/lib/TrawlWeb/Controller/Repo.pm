@@ -57,6 +57,7 @@ sub get_package_manager_files ($self) {
             repo_org  => q{},
             results   => [],
             repo_id   => $repo_id,
+            repo_sha  => q{},
   );
 
   my $repo_deets = $self->repository->find($repo_id);
@@ -77,7 +78,8 @@ sub get_package_manager_files ($self) {
               { title => "Repository: $repo_deets->{org}/$repo_deets->{name}" }
             ],
             repo_name => $repo_deets->{name},
-            repo_org  => $repo_deets->{org}
+            repo_org  => $repo_deets->{org},
+            repo_sha  => $repo_deets->{sha},
   );
 
   my $results =

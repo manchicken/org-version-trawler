@@ -2,6 +2,8 @@ package Persistence;
 
 use Modern::Perl '2020';
 
+use Mojo::Base -signatures;
+
 use Syntax::Keyword::Try;
 use Carp qw/confess/;
 use Readonly;
@@ -54,7 +56,7 @@ sub upsert_record {
 }
 
 sub upsert_repository {
-  my ($self, $org, $repo, $sha) = @_;
+  my ($self, $org, $repo, $sha, $metadata) = @_;
 
   my $db = $self->db;
 
@@ -74,6 +76,7 @@ EOSQL
                            { name => $repo,
                              org  => $org,
                              sha  => $sha,
+                             %{$metadata}
                            }
                           );
   }
