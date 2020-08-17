@@ -4,7 +4,7 @@ Palette
 - #ffca00
 - #ff6732
 - #00f2ff
-- #2a2f3d 
+- #2a2f3d
  */
 
 * {
@@ -38,6 +38,9 @@ td {
   border: 0.5px solid #2a2f3d;
   padding: 4px;
   font-size: smaller;
+}
+th > a {
+  color: #2a2f3d;
 }
 tr.linkish td,
 td.linkish {
@@ -112,6 +115,11 @@ header {
   padding: 4px;
   background: #2a2f3d;
   color: #f9f9f9;
+}
+
+header > h1 > a {
+  text-decoration: none;
+  color: inherit;
 }
 
 nav {

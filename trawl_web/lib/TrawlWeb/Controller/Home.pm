@@ -15,6 +15,9 @@ sub welcome {
 
   $self->stash(breadcrumbs => [ { title => "Package Manager" } ]);
 
+  # Grab the count of unmaintained repos
+  $self->stash(unmaintained_count => $self->repository->count_unmaintained || 'UNKNOWN');
+
   # Render template "example/welcome.html.ep" with message
   return $self->stash(
                   msg => 'Welcome to the Mojolicious real-time web framework!');
@@ -29,6 +32,11 @@ sub package_manager {
                                 { title => $pkg_mgr_name },
                               ]
               );
+
+  # Load the chart data...
+  $self->stash(
+         chart_data => $self->charts->dependency_popularity_chart($pkg_mgr_name)
+           || {});
 
   return $self->stash(pkg_mgr_name => $pkg_mgr_name);
 }

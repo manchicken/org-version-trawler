@@ -1,13 +1,72 @@
 % layout 'default';
 % title 'Charts!';
 % use Mojo::Util qw/url_unescape/;
+% use TrawlWeb::Util qw/min_height/;
+% my $height = min_height(int($chart_data->{colorCount}) * 35);
 
 %# This is the initialization of the chart; it sticks the JavaScript in the header.
 % content_for head_tag => begin
 %== chart_init
+<script>
+const onClickFunc = (pkgName) => {
+  if (pkgName) document.location.href = '/package_manager/<%= $pkg_mgr_name %>/package_name/'+fixpath(pkgName);
+}
+
+% if (not $chart_data->{oversized_chart}) {
+  window.onload = () => {
+    const ctx = document.getElementById('dependencyPopularityChart').getContext('2d')
+    let chart = new Chart(ctx, {
+      type: 'horizontalBar',
+      data: {
+        labels: <%== $chart_data->{labels} =%>,
+        datasets: [{
+          data: <%== $chart_data->{data} %>,
+          backgroundColor: getChartColors(<%== $chart_data->{colorCount} %>),
+        }]
+      },
+      options: {
+        legend: {display:false},
+        scales: {
+          xAxes: [{ ticks: { beginAtZero: true, suggestedMin: 1, precision: 0 } }],
+          yAxes: [{
+            ticks: { beginAtZero: true, suggestedMin: 1, precision: 0 }
+          }]
+        },
+        onClick: (e) => {
+          const chartNode = chart.getElementsAtEvent(e)[0]
+          window.chartNode = chartNode
+          console.log(chartNode._model.label);
+
+          const pkgName = <%== $chart_data->{labels} %>[chartNode._index] || null;
+          if (chartNode._model.label) document.location.href = '/package_manager/<%= $chart_data->{package_manager} %>/package_name/'+fixpath(pkgName);
+          }
+      }
+    })
+  }
+% }
+</script>
 % end
 
 <h2>Dependencies found for package manager <%= url_unescape($pkg_mgr_name) %></h2>
 
-%# W000! Charts
-%== dependency_popularity_chart url_unescape($pkg_mgr_name)
+% if (not $chart_data->{oversized_chart}) {
+  <div style="width: 900px; height: <%=$height%>px;"><canvas style="width:900px; height:<%=$height%>px;" id="dependencyPopularityChart"></canvas></div>
+% } else {
+  # This is for use when the list of dependencies is too big for jschart
+  <table class="chart">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      % for my $item (@{$chart_data->{items}}) {
+      <tr class="linkish" onclick="onClickFunc('<%= $item->{label} %>')">
+        <td><%= $item->{label} %></td>
+        <td><%= $item->{count} %></td>
+      </tr>
+      % }
+    </tbody>
+  </table>
+% }

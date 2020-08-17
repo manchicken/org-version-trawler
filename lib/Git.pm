@@ -102,15 +102,20 @@ sub get_tree_for_repo {
   # Return the tree.
   return
     Git::Tree->new(
-                   {
-                     repo => { user => $user,
-                               name => $repo,
-                               sha  => $commit->{sha},
-                             },
-                     %$tree,
-                     gh => $self->gh
-                   }
-                  );
+           {
+             repo => {
+               user     => $user,
+               name     => $repo,
+               sha      => $commit->{sha},
+               metadata => {
+                 last_commit => $commit->{commit}->{committer}->{date} || undef,
+                 last_committed_by => $commit->{author}->{login}
+               }
+             },
+             %$tree,
+             gh => $self->gh
+           }
+    );
 }
 
 1;

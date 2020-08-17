@@ -24,7 +24,9 @@ __DATA__
 create table repository (
   name TEXT NOT NULL,
   org TEXT NOT NULL,
-  sha TEXT NOT NULL
+  sha TEXT NOT NULL,
+  last_commit DATETIME NULL,
+  last_committed_by TEXT NULL
 );
 create index idx_repo_name on repository (name);
 create unique index idx_repo_name_org on repository (name, org);

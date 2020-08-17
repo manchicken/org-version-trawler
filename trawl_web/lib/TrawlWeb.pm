@@ -10,6 +10,7 @@ use TrawlWeb::Model::Repository;
 use TrawlWeb::Model::DependencyFile;
 use TrawlWeb::Model::DependencyVersion;
 use TrawlWeb::Model::RepositoryDependency;
+use TrawlWeb::Model::Charts;
 
 # This method will run once at server start
 sub startup {
@@ -64,6 +65,12 @@ sub startup {
         TrawlWeb::Model::RepositoryDependency->new(db => shift->db);
     }
   );
+  $self->helper(
+    charts => sub {
+      state $charts =
+        TrawlWeb::Model::Charts->new(db => shift->db);
+    }
+  );
 
   # Router
   my $r = $self->routes;
@@ -99,6 +106,9 @@ sub startup {
     ->to('repo#get_package_manager');
   $r->get('/repo/:repo_id/dependency_file/:dep_file_id')
     ->to('repo#get_dependency_file');
+
+  ## Unmaintained repository stuff.
+  $r->get('/repo/unmaintained')->to('repo#get_unmaintained_report');
 
   return;
 }
