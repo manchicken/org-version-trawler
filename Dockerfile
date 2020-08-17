@@ -20,10 +20,6 @@ RUN carton install --deployment
 # Copy over the code.
 COPY ./ /app/
 
-# Move the startup-data to the data dir.
-RUN mv /app/startup-data/* /app-data
-RUN rm -rf /app/startup-data
-
 EXPOSE 3000/tcp
 
 # Set the entry-point to the runner.
