@@ -39,6 +39,9 @@ td {
   padding: 4px;
   font-size: smaller;
 }
+th > a {
+  color: #2a2f3d;
+}
 tr.linkish td,
 td.linkish {
   color: #ff6732;

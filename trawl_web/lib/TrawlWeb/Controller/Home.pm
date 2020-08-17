@@ -15,6 +15,9 @@ sub welcome {
 
   $self->stash(breadcrumbs => [ { title => "Package Manager" } ]);
 
+  # Grab the count of unmaintained repos
+  $self->stash(unmaintained_count => $self->repository->count_unmaintained || 'UNKNOWN');
+
   # Render template "example/welcome.html.ep" with message
   return $self->stash(
                   msg => 'Welcome to the Mojolicious real-time web framework!');

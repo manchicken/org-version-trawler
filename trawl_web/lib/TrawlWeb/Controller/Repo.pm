@@ -18,6 +18,7 @@ This Mojo controller allows us to do things within a single repository, such as 
 
 ## no critic (ProhibitSubroutinePrototypes)
 use Mojo::Base 'Mojolicious::Controller', -signatures;
+use Mojo::Util qw/xml_escape/;
 
 use Readonly;
 use PackageManager::Util qw/sort_semver/;
@@ -168,6 +169,14 @@ sub get_package_manager($self) {
   return $self->stash(results => $results);
 }
 
+=pod
+
+=item C<get_dependency_file()>
+
+This action displays details about a specific dependency file.
+
+=cut
+
 sub get_dependency_file($self) {
   my $repo_id     = $self->param('repo_id');
   my $dep_file_id = $self->param('dep_file_id');
@@ -240,6 +249,60 @@ sub get_dependency_file($self) {
 
   # Update the results in the stash.
   return $self->stash(results => $results);
+}
+
+=pod
+
+=item C<get_unmaintained_report()>
+
+This action displays the report of unmaintained repositories.
+
+=cut
+
+Readonly my $SORT_ORDERS => {
+              name              => [qw/org name last_commit/],
+              last_commit       => [qw/last_commit org name/],
+              last_committed_by => [qw/last_committed_by last_commit org name/],
+};
+
+sub get_unmaintained_report($self) {
+  my $sort_pref = $self->param('sort')  || 'last_commit';
+  my $order     = $self->param('order') || 'asc';
+
+  $self->stash(message     => q{},
+               breadcrumbs => [ { title => "Package Manager", url => q{/} },
+                                { title => 'Unmaintained Repositories' }
+                              ],
+               results => [],
+               unmaintained_period_description => $TrawlWeb::Model::Repository::UNMAINTAINED_PERIOD_DESCRIPTION || q{ACK!},
+              );
+
+  # Validate sort order
+  my @sort_cols = qw/last_commit org name/;
+  if (not exists $SORT_ORDERS->{$sort_pref}) {
+    $self->stash(message => 'Invalid sort order: ' . xml_escape($sort_pref));
+  } else {
+    @sort_cols = @{ $SORT_ORDERS->{$sort_pref} };
+  }
+
+  # Force to ascending if we don't have a valid one.
+  if (lc $order ne 'asc' and lc $order ne 'desc') {
+    $order = 'asc';
+  }
+
+  # Make the call out to the model
+  my $unmaintained_list =
+    $self->repository->list_unmaintained($order, @sort_cols)->to_array;
+  if (not scalar @{$unmaintained_list}) {
+    $self->stash(
+         message => q{No unmaintained repositories. Wow. That's really great.});
+  }
+
+  return
+    $self->stash(results   => $unmaintained_list,
+                 order     => $order,
+                 sort_pref => $sort_pref
+                );
 }
 
 1;

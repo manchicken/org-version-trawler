@@ -107,6 +107,9 @@ sub startup {
   $r->get('/repo/:repo_id/dependency_file/:dep_file_id')
     ->to('repo#get_dependency_file');
 
+  ## Unmaintained repository stuff.
+  $r->get('/repo/unmaintained')->to('repo#get_unmaintained_report');
+
   return;
 }
 
