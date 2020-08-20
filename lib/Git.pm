@@ -62,6 +62,8 @@ sub get_tree_for_next_repo {
                                         $repo_deets->{name});
     next if !$tree;
 
+    $tree->{repo}->{archived} = $repo_deets->{archived} ? 'T' : 'F';
+
     return $tree;
   }
 
@@ -100,22 +102,24 @@ sub get_tree_for_repo {
   };
 
   # Return the tree.
-  return
-    Git::Tree->new(
-           {
-             repo => {
-               user     => $user,
-               name     => $repo,
-               sha      => $commit->{sha},
-               metadata => {
-                 last_commit => $commit->{commit}->{committer}->{date} || undef,
-                 last_committed_by => $commit->{author}->{login}
-               }
-             },
-             %$tree,
-             gh => $self->gh
-           }
-    );
+  return Git::Tree->new(
+    {
+      repo => {
+        user     => $user,
+        name     => $repo,
+        sha      => $commit->{sha},
+        metadata => {
+          empty => defined $commit
+          ? 'F'
+          : 'T',    # If there's no commit, the repo is empty.
+          last_commit       => $commit->{commit}->{committer}->{date} || undef,
+          last_committed_by => $commit->{author}->{login}
+                    }
+              },
+      %$tree,
+      gh => $self->gh
+    }
+  );
 }
 
 1;

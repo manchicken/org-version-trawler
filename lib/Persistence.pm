@@ -56,13 +56,13 @@ sub upsert_record {
 }
 
 sub upsert_repository {
-  my ($self, $org, $repo, $sha, $metadata) = @_;
+  my ($self, $org, $repo, $sha, $archived, $metadata) = @_;
 
   my $db = $self->db;
 
   my $found = $db->query(<<'EOSQL', $repo, $org)->hash();
 select
-  rowid, name, org, sha
+  rowid, name, org, sha, archived
 from
   repository
 where
@@ -73,9 +73,10 @@ EOSQL
   if (!$found) {
     return
       $self->upsert_record('repository',
-                           { name => $repo,
-                             org  => $org,
-                             sha  => $sha,
+                           { name     => $repo,
+                             org      => $org,
+                             sha      => $sha,
+                             archived => $archived,
                              %{$metadata}
                            }
                           );

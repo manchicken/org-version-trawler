@@ -34,9 +34,10 @@ sub _should_skip_for_incremental_trawl ($self, $tree) {
 
   my $found = $db->select('repository',
                           ['rowid'],
-                          { name => $tree->{repo}->{name},
-                            org  => $tree->{repo}->{user},
-                            sha  => $tree->{repo}->{sha}
+                          { name     => $tree->{repo}->{name},
+                            org      => $tree->{repo}->{user},
+                            sha      => $tree->{repo}->{sha},
+                            archived => $tree->{repo}->{archived}
                           }
                          )->hash;
 
@@ -48,13 +49,13 @@ sub _record_repo ($self, $tree) {
   return if not $tree;
 
   my $repo_id =
-    $self->{persistence}->upsert_repository($tree->{repo}->{user},
-                                            $tree->{repo}->{name},
-                                            $tree->{repo}->{sha},
-                                            $tree->{repo}->{metadata},
+    $self->{persistence}->upsert_repository(
+    $tree->{repo}->{user}, $tree->{repo}->{name},
+    $tree->{repo}->{sha},  $tree->{repo}->{archived},
+    $tree->{repo}->{metadata},
                                            );
   say <<"EODEBUG";
-Recorded repository $tree->{repo}->{user}/$tree->{repo}->{name} at <<$tree->{repo}->{sha}>> as repo ID $repo_id!
+Recorded repository $tree->{repo}->{user}/$tree->{repo}->{name} at <<$tree->{repo}->{sha}>>($tree->{repo}->{archived}) as repo ID $repo_id!
 EODEBUG
 
   $tree->{repo_id} = $repo_id;
@@ -167,7 +168,12 @@ EODEBUG
   return;
 }
 
-sub trawl_all ($self, $org, $incremental = 0, $stopper = sub { 0 }) {
+sub trawl_all ($self, $org = undef, $incremental = 0, $stopper = sub { 0 }) {
+
+  $org ||= $ENV{GITHUB_USER_ORG};
+
+  # Let's trawl the users...
+  $self->trawl_users($org, $stopper);
 
   # Loop over all of the repository trees
   while (my $tree = $self->next_repo_tree($org, $incremental, $stopper)) {
@@ -189,6 +195,26 @@ sub trawl_one ($self, $org, $repo) {
   $self->trawl_repo_tree($tree);
 
   return $tree->{repo_id};
+}
+
+sub trawl_users ($self, $org, $stopper) {
+  my $gh = $self->{git}->gh;
+
+  my $org_instance = $gh->org;
+
+  while (my $user = $org_instance->next_member($org)) {
+    last if $stopper->();
+    say STDERR "Recording User <<$user->{login}>>";
+    $self->{persistence}->upsert_record('org_member',
+                                        { login      => $user->{login},
+                                          type       => $user->{type},
+                                          avatar_url => $user->{avatar_url}
+                                        }
+                                       );
+  }
+  $org_instance->close_member($org);
+
+  return;
 }
 
 1;

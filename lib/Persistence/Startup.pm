@@ -25,6 +25,8 @@ create table repository (
   name TEXT NOT NULL,
   org TEXT NOT NULL,
   sha TEXT NOT NULL,
+  archived CHAR(1) NOT NULL,
+  empty CHAR(1) NOT NULL,
   last_commit DATETIME NULL,
   last_committed_by TEXT NULL
 );
@@ -52,6 +54,13 @@ create table repository_dependency (
 );
 create index idx_rd_repository on repository_dependency (repository);
 create index idx_rd_dependency_version on repository_dependency (dependency_version);
+
+create table org_member (
+  login TEXT NOT NULL,
+  type TEXT NOT NULL,
+  avatar_url TEXT NULL
+);
+create index idx_om_login on org_member (login);
 
 -- 1 down
 drop table repository;
