@@ -83,12 +83,12 @@ EOSQL
   }
 
   # If the sha matches, just return that.
-  if ($found->{sha} eq $sha) {
+  if ($found->{sha} eq $sha and $found->{archived} eq $archived) {
     return $found->{rowid};
   }
 
   # Here's the edge-case here! Let's update the SHA, and then return the rowid.
-  $db->update('repository', { sha => $sha }, { rowid => $found->{rowid} });
+  $db->update('repository', { sha => $sha, archived => $archived }, { rowid => $found->{rowid} });
   return $found->{rowid};
 }
 
