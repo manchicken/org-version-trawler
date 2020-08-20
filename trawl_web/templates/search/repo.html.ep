@@ -13,7 +13,7 @@
 <h2>Search for a Repository</h2>
 %= form_for '/search/repo' => (method => q/GET/, class => 'search-form') => begin
   %= label_for terms => 'Search for a Repo:'
-  %= search_field terms => '', id=>'terms'
+  %= search_field terms => $terms || q{}, id=>'terms'
   %= submit_button
 % end
 
@@ -32,7 +32,7 @@
     </thead>
     <tbody>
       % for my $result (@{$results}) {
-        <tr class="linkish" onClick="onOrgRepoClick(<%= $result->{rowid} =%>)">
+        <tr class="linkish <%= $result->{archived} eq 'T' ? q{archived-result} : q{} %>" onClick="onOrgRepoClick(<%= $result->{rowid} =%>)">
           <td><code><%= $result->{org} %></code></td>
           <td><code><%= $result->{name} %></code></td>
           <td><code><%= $result->{sha} %></code></td>

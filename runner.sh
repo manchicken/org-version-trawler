@@ -15,6 +15,8 @@ if [ "$DEBUG" = "1" ]; then
 elif [ "$DEBUG" = "2" ]; then
   DEBUG_ARGS="-m development -w lib -w trawl_web"
   export DISABLE_TRAWLER="1"
+else
+  export DEBUG_ARGS="-m production"
 fi
 
 if [ -z "$BAD" ]; then

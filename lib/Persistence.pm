@@ -56,13 +56,13 @@ sub upsert_record {
 }
 
 sub upsert_repository {
-  my ($self, $org, $repo, $sha, $metadata) = @_;
+  my ($self, $org, $repo, $sha, $archived, $metadata) = @_;
 
   my $db = $self->db;
 
   my $found = $db->query(<<'EOSQL', $repo, $org)->hash();
 select
-  rowid, name, org, sha
+  rowid, name, org, sha, archived
 from
   repository
 where
@@ -73,21 +73,22 @@ EOSQL
   if (!$found) {
     return
       $self->upsert_record('repository',
-                           { name => $repo,
-                             org  => $org,
-                             sha  => $sha,
+                           { name     => $repo,
+                             org      => $org,
+                             sha      => $sha,
+                             archived => $archived,
                              %{$metadata}
                            }
                           );
   }
 
   # If the sha matches, just return that.
-  if ($found->{sha} eq $sha) {
+  if ($found->{sha} eq $sha and $found->{archived} eq $archived) {
     return $found->{rowid};
   }
 
   # Here's the edge-case here! Let's update the SHA, and then return the rowid.
-  $db->update('repository', { sha => $sha }, { rowid => $found->{rowid} });
+  $db->update('repository', { sha => $sha, archived => $archived }, { rowid => $found->{rowid} });
   return $found->{rowid};
 }
 

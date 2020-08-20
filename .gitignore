@@ -3,6 +3,7 @@
 /META.yml
 /META.json
 /MYMETA.*
+.DS_Store
 *.o
 *.pm.tdy
 *.bs

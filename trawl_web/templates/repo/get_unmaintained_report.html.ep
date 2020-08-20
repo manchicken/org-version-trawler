@@ -37,15 +37,18 @@
     <tbody>
       % for my $result (@{$results}) {
         <tr>
-          <td><a href="/repo/<%= $result->{rowid} =%>/package_manager_files"><code><%= $result->{org}.'/'.$result->{name} %></code></a></td>
           <td>
-            <a href="https://github.com/<%= $result->{org} =%>/<%= $result->{name} =%>/commit/<%= $result->{sha} %>" target="_blank">
+            <a href="/repo/<%= $result->{rowid} =%>/package_manager_files" title="View Package Manager Files"><code><%= $result->{org}.'/'.$result->{name} %></code></a>
+            <a style="text-decoration: none;" href="https://github.com/<%= $result->{org} =%>/<%= $result->{name} =%>" target="_blank" title="View on GitHub!">&#x1F310;</a>
+          </td>
+          <td>
+            <a href="https://github.com/<%= $result->{org} =%>/<%= $result->{name} =%>/commit/<%= $result->{sha} %>" target="_blank" title="View Latest Commit on GitHub!">
               <%= Mojo::Date->new($result->{last_commit})->to_string =%>
             </a>
           </td>
           <td>
             % if (length $result->{last_committed_by}) {
-              <a href="https://github.com/<%= $result->{last_committed_by} =%>" target="_blank"><%= $result->{last_committed_by} =%></a>
+              <a href="https://github.com/<%= $result->{last_committed_by} =%>" target="_blank" title="View Committer's Profile on GitHub!"><%= $result->{last_committed_by} =%></a>
             % } else {
               <span class="missing-author">Unknown</span>
             % }

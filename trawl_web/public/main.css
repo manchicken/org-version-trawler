@@ -58,6 +58,10 @@ th {
   text-align: right;
 }
 
+.archived-result {
+  text-decoration: line-through;
+}
+
 /** Form elements */
 
 .search-form input {

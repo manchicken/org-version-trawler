@@ -43,6 +43,7 @@ sub repo($self) {
   # Now that we've validated the params, let's perform a search.
   my $results =
     $self->repository->find_by_name_pattern(qq{\%$terms\%})->to_array;
+
   if (!scalar @{$results}) {
     return $self->stash(message => 'No results found',);
   }

@@ -13,7 +13,7 @@
 % end
 
 % if ( 0 < length $message) {
-  <strong><%= $message =%></strong>
+  <p><%= $message =%></p>
 % }
 % if ( 0 < scalar @{$results} ) {
   <h2>Results</h2>
@@ -37,4 +37,6 @@
       % }
     </tbody>
   </table>
+% } else {
+  <p>There were no results for this repository. That likely means that there are no compatible package management files committed to this repository.</p>
 % }
