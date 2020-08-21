@@ -313,6 +313,17 @@ DISTRIBUTIONS
       Time::Zone 0
       perl 5.006002
       strict 0
+  HTTP-Lite-2.44
+    pathname: N/NE/NEILB/HTTP-Lite-2.44.tar.gz
+    provides:
+      HTTP::Lite 2.44
+    requirements:
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      Socket 1.3
+      perl 5.005
+      strict 0
+      warnings 0
   HTTP-Message-6.18
     pathname: O/OA/OALDERS/HTTP-Message-6.18.tar.gz
     provides:
@@ -1089,6 +1100,14 @@ DISTRIBUTIONS
       Fcntl 0
       URI 1.10
       perl 5.008001
+  XML-TreePP-0.43
+    pathname: K/KA/KAWASAKI/XML-TreePP-0.43.tar.gz
+    provides:
+      XML::TreePP 0.43
+    requirements:
+      ExtUtils::MakeMaker 0
+      LWP 5.811
+      Test::More 0
   libwww-perl-6.43
     pathname: O/OA/OALDERS/libwww-perl-6.43.tar.gz
     provides:

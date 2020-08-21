@@ -1,3 +1,4 @@
+requires 'HTTP::Lite'           => '0';
 requires 'Net::GitHub'          => '0';
 requires 'Mojo::SQLite'         => '0';
 requires 'Mojolicious'          => '0';
