@@ -82,6 +82,9 @@ sub parse($self) {
           exists $properties->{$prop_token}
           ? $properties->{$prop_token}
           : $version;
+        if (ref $version eq 'ARRAY') {
+          $version = join ' - ', @{$version};
+        }
       }
 
       push @{ $self->{deps} }, { package => $name, version => $version };
