@@ -8,6 +8,7 @@ requires 'Readonly'             => '0';
 requires 'Syntax::Keyword::Try' => '0';
 requires 'JSON'                 => '0';
 requires 'FindBin'              => '0';
+requires 'XML::TreePP'          => '0';
 
 # This isn't because we use PG=> it's just got a better API.
 requires 'Mojo::Pg' => '0';

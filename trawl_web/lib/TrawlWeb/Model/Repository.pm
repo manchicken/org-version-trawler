@@ -37,14 +37,20 @@ sub count_unmaintained ($self) {
 }
 
 sub list_unmaintained ($self, $order = 'asc', @sort_cols) {
-  if (not scalar @sort_cols) {
+  if (0 == scalar @sort_cols) {
 
     # Default sort
     @sort_cols = qw/last_commit org name/;
   }
 
-  if (!@sort_cols ~~ (qw/org name last_commit last_committed_by/)) {
-    raise 'Invalid sort columns: ' . join(@sort_cols);
+  for my $item (@sort_cols) {
+    if (    $item ne 'org'
+        and $item ne 'name'
+        and $item ne 'last_commit'
+        and $item ne 'last_committed_by')
+    {
+      raise 'Invalid sort columns: ' . join(', ', @sort_cols);
+    }
   }
 
   # Force to ascending if we don't have a valid one.

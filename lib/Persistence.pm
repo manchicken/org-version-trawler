@@ -88,7 +88,9 @@ EOSQL
   }
 
   # Here's the edge-case here! Let's update the SHA, and then return the rowid.
-  $db->update('repository', { sha => $sha, archived => $archived }, { rowid => $found->{rowid} });
+  $db->update('repository',
+              { sha   => $sha, archived => $archived },
+              { rowid => $found->{rowid} });
   return $found->{rowid};
 }
 
