@@ -43,9 +43,11 @@ sub list_unmaintained ($self, $order = 'asc', @sort_cols) {
     @sort_cols = qw/last_commit org name/;
   }
 
-  if (!@sort_cols ~~ (qw/org name last_commit last_committed_by/)) {
+  no warnings;
+  if (!(@sort_cols ~~ qw/org name last_commit last_committed_by/)) {
     raise 'Invalid sort columns: ' . join(@sort_cols);
   }
+  use warnings;
 
   # Force to ascending if we don't have a valid one.
   if (lc $order ne 'asc' and lc $order ne 'desc') {

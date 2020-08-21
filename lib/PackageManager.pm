@@ -9,18 +9,21 @@ use PackageManager::PipfileLock;
 use PackageManager::PackageJson;
 use PackageManager::Dockerfile;
 use PackageManager::CfnLambdaRuntime;
+use PackageManager::PomXml;
 
 Readonly::Scalar my $managers => {
-               PackageManager::RequirementsTxt->package_manager_details->{re} =>
-                 q?PackageManager::RequirementsTxt?,
-               PackageManager::PipfileLock->package_manager_details->{re} =>
-                 q?PackageManager::PipfileLock?,
-               PackageManager::PackageJson->package_manager_details->{re} =>
-                 q?PackageManager::PackageJson?,
-               PackageManager::Dockerfile->package_manager_details->{re} =>
-                 q?PackageManager::Dockerfile?,
-               PackageManager::CfnLambdaRuntime->package_manager_details->{re} =>
-                 q?PackageManager::CfnLambdaRuntime?,
+              PackageManager::RequirementsTxt->package_manager_details->{re} =>
+                q?PackageManager::RequirementsTxt?,
+              PackageManager::PipfileLock->package_manager_details->{re} =>
+                q?PackageManager::PipfileLock?,
+              PackageManager::PackageJson->package_manager_details->{re} =>
+                q?PackageManager::PackageJson?,
+              PackageManager::Dockerfile->package_manager_details->{re} =>
+                q?PackageManager::Dockerfile?,
+              PackageManager::CfnLambdaRuntime->package_manager_details->{re} =>
+                q?PackageManager::CfnLambdaRuntime?,
+              PackageManager::PomXml->package_manager_details->{re} =>
+                q?PackageManager::PomXml?,
 };
 
 sub has_package_manager {

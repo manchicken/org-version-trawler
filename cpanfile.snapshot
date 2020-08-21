@@ -1089,6 +1089,14 @@ DISTRIBUTIONS
       Fcntl 0
       URI 1.10
       perl 5.008001
+  XML-TreePP-0.43
+    pathname: K/KA/KAWASAKI/XML-TreePP-0.43.tar.gz
+    provides:
+      XML::TreePP 0.43
+    requirements:
+      ExtUtils::MakeMaker 0
+      LWP 5.811
+      Test::More 0
   libwww-perl-6.43
     pathname: O/OA/OALDERS/libwww-perl-6.43.tar.gz
     provides:
