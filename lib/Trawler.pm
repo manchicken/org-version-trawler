@@ -173,7 +173,8 @@ sub trawl_all ($self, $org = undef, $incremental = 0, $stopper = sub { 0 }) {
   $org ||= $ENV{GITHUB_USER_ORG};
 
   # Let's trawl the users...
-  $self->trawl_users($org, $stopper);
+ $self->trawl_users($org, $stopper);
+  say STDERR "User pull is done.";
 
   # Loop over all of the repository trees
   while (my $tree = $self->next_repo_tree($org, $incremental, $stopper)) {
