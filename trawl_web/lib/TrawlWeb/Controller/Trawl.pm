@@ -71,9 +71,6 @@ sub run_subprocess ($self) {
   $runner_start_time = time;
   $run_count += 1;
 
-  # Invalidate any caches we have.
-  $self->org_member->invalidate_cache;
-
   return $subprocess->run_p(
 
     # The only thing we want to put inside of this sub
@@ -130,6 +127,10 @@ sub run ($self) {
   }
 
   $self->stash(msg => "Starting trawler.");
+
+  # Invalidate any caches we have.
+  $self->org_member->invalidate_cache;
+
   return $self->run_subprocess;
 }
 
