@@ -1,14 +1,8 @@
 % use Mojo::Util qw/url_escape/;
 % layout 'default';
 % title "Unmaintained Repositories Report";
-% use DateTime;
-% use DateTime::Format::Strptime;
 
-% my $formatter = DateTime::Format::Strptime->new(
-%   locale => 'en_US',
-%   time_zone => 'America/New_York',
-%   pattern => '%F %R %Z',
-% );
+% use TrawlWeb::Util qw/present_date_from_date/;
 
 <h2>Unmaintained Repositories</h2>
 
@@ -52,7 +46,7 @@
           </td>
           <td>
             <a href="https://github.com/<%= $result->{org} =%>/<%= $result->{name} =%>/commit/<%= $result->{sha} %>" target="_blank" title="View Latest Commit on GitHub!">
-              <%= DateTime->from_epoch(formatter=>$formatter, time_zone=>'America/New_York', epoch=>Mojo::Date->new($result->{last_commit})->epoch)->stringify =%>
+              <%= present_date_from_date($result->{last_commit}) =%>
             </a>
           </td>
           <td>
@@ -68,8 +62,8 @@
             %  and scalar @{$result->{contributors}}) {
               <ul class="contributor-list">
                 % for my $contributor (@{$result->{contributors}}) {
-                  <li class="member-status-<%= $contributor->{is_member} ? 'yes' : 'no' =%>">
-                    <a href="https://github.com/<%= $result->{login} =%>" target="_blank" title="View <%= $contributor->{login} =%>'s Profile on GitHub">
+                  <li class="member-status-<%= $contributor->{is_member} eq 'T' ? 'yes' : 'no' =%>">
+                    <a href="https://github.com/<%= $contributor->{login} =%>" target="_blank" title="View <%= $contributor->{login} =%>'s Profile on GitHub">
                       <img src="<%= $contributor->{avatar_url} =%>');" width="25" />
                       <%= $contributor->{login} %> (<%= $contributor->{contributions} %>)
                     </a>

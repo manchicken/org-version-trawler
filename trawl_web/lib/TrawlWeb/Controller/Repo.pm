@@ -42,7 +42,8 @@ sub get_package_manager_files ($self) {
 
   # All of the $back_behavior stuff is a
   # stop-gap to the older approach of the charts.
-  my $back_behavior = $self->param('ref') and $self->param('ref') eq 'back';
+  my $back_behavior =
+    ($self->param('ref') and $self->param('ref') eq 'back') ? 1 : 0;
 
   $self->stash(
             message     => q{},

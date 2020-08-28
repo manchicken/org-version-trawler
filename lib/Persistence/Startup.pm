@@ -59,7 +59,7 @@ create table org_member (
   login TEXT NOT NULL,
   type TEXT NOT NULL,
   avatar_url TEXT NULL,
-  last_seen DATETIME NOT NULL,
+  last_seen DATETIME,
   assumed_active CHAR
 );
 create index idx_om_login on org_member (login);

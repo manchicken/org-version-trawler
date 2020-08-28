@@ -210,18 +210,24 @@ sub trawl_users ($self, $org, $stopper) {
   while (my $user = $org_instance->next_member($org)) {
     last if $stopper->();
     say STDERR "Recording User <<$user->{login}>>";
-    $self->{persistence}->upsert_record('org_member',
-                                        { login          => $user->{login},
-                                          type           => $user->{type},
-                                          avatar_url     => $user->{avatar_url},
-                                          last_seen      => $last_seen,
-                                          assumed_active => 'T',
-                                        }
-                                       );
+    my $rowid =
+      $self->{persistence}->upsert_record('org_member',
+                                          { login      => $user->{login},
+                                            type       => $user->{type},
+                                            avatar_url => $user->{avatar_url},
+                                            assumed_active => 'T',
+                                          }
+                                         );
+    $self->{persistence}->db->update('org_member',
+                                     { last_seen => $last_seen },
+                                     { rowid     => $rowid });
   }
   $org_instance->close_member($org);
 
-  my $inactive_date = Mojo::Date->new(time - 60 * 60 * 24);
+  my $inactive_date = Mojo::Date->new(time() - 60 * 60 * 12);
+  say STDERR "Now Date: $last_seen";
+  say STDERR "Inactive Date: $inactive_date";
+  local $ENV{DBI_TRACE} = 99;
   $self->{persistence}->db->update('org_member',
                                    { assumed_active => 'F' },
                                    { last_seen => { '<' => $inactive_date } });

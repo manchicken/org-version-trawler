@@ -34,7 +34,7 @@ sub is_member ($self, $login) {
   $self->_populate_cache;
 
   return (exists $self->cached_members->{$login}
-      and $self->cached_members->{$login}->{assumed_active} eq 'T') ? 'T' : 'F';
+       && $self->cached_members->{$login}->{assumed_active} eq 'T') ? 'T' : 'F';
 }
 
 1;

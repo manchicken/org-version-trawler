@@ -13,6 +13,7 @@
 - `GITHUB_ACCESS_TOKEN` - This is your Github access token. Be careful with how you store this.
 - `GITHUB_USER_ORG` - This is the username or organization name that you want to trawl. If you don't have permissions to the repository, the trawler will error out.
 - `TRAWLER_DATA_DIR` - This should point at the directory where you want data to live. If this value is missing, it will default to `$PWD/data`.
+- `TZ` - This is the standardized IANA time zone name ([see more](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones))
 
 ## Running
 
