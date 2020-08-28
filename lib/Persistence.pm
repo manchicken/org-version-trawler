@@ -2,6 +2,7 @@ package Persistence;
 
 use Modern::Perl '2020';
 
+## no critic (ProhibitSubroutinePrototypes)
 use Mojo::Base -signatures;
 
 use Syntax::Keyword::Try;
@@ -21,8 +22,7 @@ sub new {
   return bless $self, $pkg;
 }
 
-sub sql {
-  my ($self) = @_;
+sub sql ($self) {
 
   if (!exists $self->{_sql}) {
     $self->{_sql} = Mojo::SQLite->new($TrawlerConfig::SQL_FILE)
@@ -92,6 +92,25 @@ EOSQL
               { sha   => $sha, archived => $archived },
               { rowid => $found->{rowid} });
   return $found->{rowid};
+}
+
+sub upsert_contributors ($self, $repo_id, $contributors) {
+
+  # Trash all of the existing records.
+  $self->db->delete('repository_contributor', { repository => $repo_id });
+
+  # Re-create the new ones.
+  my $insert_count = 0;
+  for my $one (@{$contributors}) {
+    $self->db->insert('repository_contributor',
+                      { repository => $repo_id,
+                        %{$one}{qw/login avatar_url type contributions/}
+                      }
+                     );
+    $insert_count += 1;
+  }
+
+  return $insert_count;
 }
 
 1;

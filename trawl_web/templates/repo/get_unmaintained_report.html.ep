@@ -1,6 +1,14 @@
 % use Mojo::Util qw/url_escape/;
 % layout 'default';
 % title "Unmaintained Repositories Report";
+% use DateTime;
+% use DateTime::Format::Strptime;
+
+% my $formatter = DateTime::Format::Strptime->new(
+%   locale => 'en_US',
+%   time_zone => 'America/New_York',
+%   pattern => '%F %R %Z',
+% );
 
 <h2>Unmaintained Repositories</h2>
 
@@ -32,6 +40,7 @@
         <th><%= $column_maker->('name', 'Repository Name') %></th>
         <th><%= $column_maker->('last_commit', 'Last Commit Date') %></th>
         <th><%= $column_maker->('last_committed_by', 'Last Committer') %></th>
+        <th>Contributors</th>
       </tr>
     </thead>
     <tbody>
@@ -43,7 +52,7 @@
           </td>
           <td>
             <a href="https://github.com/<%= $result->{org} =%>/<%= $result->{name} =%>/commit/<%= $result->{sha} %>" target="_blank" title="View Latest Commit on GitHub!">
-              <%= Mojo::Date->new($result->{last_commit})->to_string =%>
+              <%= DateTime->from_epoch(formatter=>$formatter, time_zone=>'America/New_York', epoch=>Mojo::Date->new($result->{last_commit})->epoch)->stringify =%>
             </a>
           </td>
           <td>
@@ -51,6 +60,24 @@
               <a href="https://github.com/<%= $result->{last_committed_by} =%>" target="_blank" title="View Committer's Profile on GitHub!"><%= $result->{last_committed_by} =%></a>
             % } else {
               <span class="missing-author">Unknown</span>
+            % }
+          </td>
+          <td>
+            % if ( exists $result->{contributors}
+            %  and ref $result->{contributors} eq 'ARRAY'
+            %  and scalar @{$result->{contributors}}) {
+              <ul class="contributor-list">
+                % for my $contributor (@{$result->{contributors}}) {
+                  <li class="member-status-<%= $contributor->{is_member} ? 'yes' : 'no' =%>">
+                    <a href="https://github.com/<%= $result->{login} =%>" target="_blank" title="View <%= $contributor->{login} =%>'s Profile on GitHub">
+                      <img src="<%= $contributor->{avatar_url} =%>');" width="25" />
+                      <%= $contributor->{login} %> (<%= $contributor->{contributions} %>)
+                    </a>
+                  </li>
+                % }
+              </ul>
+            % } else {
+              <em>Contributors Unknown</em>
             % }
           </td>
         </tr>

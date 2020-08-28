@@ -11,6 +11,8 @@ use TrawlWeb::Model::DependencyFile;
 use TrawlWeb::Model::DependencyVersion;
 use TrawlWeb::Model::RepositoryDependency;
 use TrawlWeb::Model::Charts;
+use TrawlWeb::Model::OrgMember;
+use TrawlWeb::Model::RepositoryContributor;
 
 # This method will run once at server start
 sub startup {
@@ -67,8 +69,18 @@ sub startup {
   );
   $self->helper(
     charts => sub {
-      state $charts =
-        TrawlWeb::Model::Charts->new(db => shift->db);
+      state $charts = TrawlWeb::Model::Charts->new(db => shift->db);
+    }
+  );
+  $self->helper(
+    org_member => sub {
+      state $org_member = TrawlWeb::Model::OrgMember->new(db => shift->db);
+    }
+  );
+  $self->helper(
+    repository_contributor => sub {
+      state $repository_contributor =
+        TrawlWeb::Model::RepositoryContributor->new(db => shift->db);
     }
   );
 
