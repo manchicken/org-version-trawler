@@ -56,11 +56,12 @@ sub get_package_manager_files ($self) {
               },
               { title => 'Repository View' }
             ],
-            repo_name => q{},
-            repo_org  => q{},
-            results   => [],
-            repo_id   => $repo_id,
-            repo_sha  => q{},
+            repo_name    => q{},
+            repo_org     => q{},
+            results      => [],
+            repo_id      => $repo_id,
+            repo_sha     => q{},
+            contributors => [],
   );
 
   my $repo_deets = $self->repository->find($repo_id);
@@ -90,6 +91,18 @@ sub get_package_manager_files ($self) {
   if (!scalar @{$results}) {
     return $self->stash(message => 'No package manger files found.');
   }
+
+  $self->stash(
+    contributors =>
+      $self->repository_contributor->find_by_repository($repo_id)->reduce(
+      sub {
+        $b->{is_member} = $self->org_member->is_member($b->{login});
+        push @{$a}, $b;
+        $a;
+      },
+      []
+                                                                         )
+              );
 
   return $self->stash(results => $results);
 }

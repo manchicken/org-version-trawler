@@ -12,6 +12,20 @@
   %= submit_button
 % end
 
+% if (scalar @{$contributors}) {
+<h2>Contributors</h2>
+<ul class="contributor-list">
+  % for my $contributor (@{$contributors}) {
+    <li class="member-status-<%= $contributor->{is_member} eq 'T' ? 'yes' : 'no' =%>">
+      <a href="https://github.com/<%= $contributor->{login} =%>" target="_blank" title="View <%= $contributor->{login} =%>'s Profile on GitHub">
+        <img src="<%= $contributor->{avatar_url} =%>');" width="25" />
+        <%= $contributor->{login} %> (<%= $contributor->{contributions} %>)
+      </a>
+    </li>
+  % }
+</ul>
+% }
+
 % if ( 0 < length $message) {
   <p><%= $message =%></p>
 % }
