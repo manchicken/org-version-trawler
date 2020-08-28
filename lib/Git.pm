@@ -1,6 +1,7 @@
 package Git;
 
-use Modern::Perl '2020';
+## no critic (ProhibitSubroutinePrototypes)
+use Mojo::Base -signatures;
 use utf8;
 
 use Carp qw/croak cluck/;
@@ -33,7 +34,7 @@ sub next_repository {
   my $org = exists $opts->{org} ? $opts->{org} : $ENV{GITHUB_USER_ORG};
 
   if (!$org) {
-    croak "🚨No org defined. Please set \$GITHUB_USER_ORG in your environment.";
+    croak "No org defined. Please set \$GITHUB_USER_ORG in your environment.";
   }
 
   return $self->gh->repos->next_org_repo($org);
@@ -70,8 +71,19 @@ sub get_tree_for_next_repo {
   return;
 }
 
-sub get_tree_for_repo {
-  my ($self, $user, $repo) = @_;
+sub get_contributors_for_repo ($self, $user, $repo) {
+  my $contributors = undef;
+
+  try { $contributors = $self->gh->repos->contributors($user, $repo); }
+  catch {
+    my ($err) = @_;
+    cluck "Failed to get contributors for repo $user/$repo: $err";
+  };
+
+  return $contributors;
+}
+
+sub get_tree_for_repo ($self, $user, $repo) {
 
   # Set the user and the repo
   $self->gh->set_default_user_repo($user, $repo);

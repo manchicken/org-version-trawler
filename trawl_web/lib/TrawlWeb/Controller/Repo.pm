@@ -22,6 +22,7 @@ use Mojo::Util qw/xml_escape/;
 
 use Readonly;
 use PackageManager::Util qw/sort_semver/;
+use Data::Dumper;
 
 =pod
 
@@ -41,7 +42,8 @@ sub get_package_manager_files ($self) {
 
   # All of the $back_behavior stuff is a
   # stop-gap to the older approach of the charts.
-  my $back_behavior = $self->param('ref') and $self->param('ref') eq 'back';
+  my $back_behavior =
+    ($self->param('ref') and $self->param('ref') eq 'back') ? 1 : 0;
 
   $self->stash(
             message     => q{},
@@ -269,13 +271,15 @@ sub get_unmaintained_report($self) {
   my $sort_pref = $self->param('sort')  || 'last_commit';
   my $order     = $self->param('order') || 'asc';
 
-  $self->stash(message     => q{},
-               breadcrumbs => [ { title => "Package Manager", url => q{/} },
-                                { title => 'Unmaintained Repositories' }
-                              ],
-               results => [],
-               unmaintained_period_description => $TrawlWeb::Model::Repository::UNMAINTAINED_PERIOD_DESCRIPTION || q{ACK!},
-              );
+  $self->stash(
+     message     => q{},
+     breadcrumbs => [ { title => "Package Manager", url => q{/} },
+                      { title => 'Unmaintained Repositories' }
+                    ],
+     results => [],
+     unmaintained_period_description =>
+       $TrawlWeb::Model::Repository::UNMAINTAINED_PERIOD_DESCRIPTION || q{ACK!},
+  );
 
   # Validate sort order
   my @sort_cols = qw/last_commit org name/;
@@ -296,6 +300,21 @@ sub get_unmaintained_report($self) {
   if (not scalar @{$unmaintained_list}) {
     $self->stash(
          message => q{No unmaintained repositories. Wow. That's really great.});
+  }
+
+  # Add the contributors
+  for my $result (@{$unmaintained_list}) {
+    my $contributors =
+      $self->repository_contributor->find_by_repository($result->{rowid})
+      ->reduce(
+      sub {
+        $b->{is_member} = $self->org_member->is_member($b->{login});
+        push @{$a}, $b;
+        $a;
+      },
+      []
+              );
+    $result->{contributors} = $contributors;
   }
 
   return

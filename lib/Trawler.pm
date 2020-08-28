@@ -1,15 +1,11 @@
 package Trawler;
 
-use Modern::Perl '2020';
+## no critic (ProhibitSubroutinePrototypes)
+use Mojo::Base -signatures;
 use Carp qw/cluck/;
 use utf8;
 
-# SIGNATURES BOILERPLATE
-## no critic (ProhibitSubroutinePrototypes)
-use feature qw(signatures);
-no warnings qw(experimental::signatures);    ## no critic (ProhibitNoWarnings)
-
-# END SIGNATURES BOILERPLATE
+use Mojo::Date;
 
 use Git;
 use PackageManager;
@@ -60,6 +56,13 @@ EODEBUG
 
   $tree->{repo_id} = $repo_id;
 
+  # Upsert the contributors.
+  my $contributors = $self->{git}
+    ->get_contributors_for_repo($tree->{repo}->{user}, $tree->{repo}->{name});
+  if ($contributors and scalar @{$contributors}) {
+    $self->{persistence}->upsert_contributors($repo_id, $contributors);
+  }
+
   return $tree;
 }
 
@@ -106,7 +109,7 @@ sub next_package_blob ($self, $tree) {
     # Get the package manager
     my $pkg_mgr = PackageManager->load($next_blob);
     if (not $pkg_mgr) {
-      cluck "🚨Despite having blob $next_blob->{path}, "
+      cluck "Despite having blob $next_blob->{path}, "
         . "I was unable to load the package manager.";
       next;
     }
@@ -173,7 +176,7 @@ sub trawl_all ($self, $org = undef, $incremental = 0, $stopper = sub { 0 }) {
   $org ||= $ENV{GITHUB_USER_ORG};
 
   # Let's trawl the users...
- $self->trawl_users($org, $stopper);
+  $self->trawl_users($org, $stopper);
   say STDERR "User pull is done.";
 
   # Loop over all of the repository trees
@@ -203,17 +206,31 @@ sub trawl_users ($self, $org, $stopper) {
 
   my $org_instance = $gh->org;
 
+  my $last_seen = Mojo::Date->new();
   while (my $user = $org_instance->next_member($org)) {
     last if $stopper->();
     say STDERR "Recording User <<$user->{login}>>";
-    $self->{persistence}->upsert_record('org_member',
-                                        { login      => $user->{login},
-                                          type       => $user->{type},
-                                          avatar_url => $user->{avatar_url}
-                                        }
-                                       );
+    my $rowid =
+      $self->{persistence}->upsert_record('org_member',
+                                          { login      => $user->{login},
+                                            type       => $user->{type},
+                                            avatar_url => $user->{avatar_url},
+                                            assumed_active => 'T',
+                                          }
+                                         );
+    $self->{persistence}->db->update('org_member',
+                                     { last_seen => $last_seen },
+                                     { rowid     => $rowid });
   }
   $org_instance->close_member($org);
+
+  my $inactive_date = Mojo::Date->new(time() - 60 * 60 * 12);
+  say STDERR "Now Date: $last_seen";
+  say STDERR "Inactive Date: $inactive_date";
+  local $ENV{DBI_TRACE} = 99;
+  $self->{persistence}->db->update('org_member',
+                                   { assumed_active => 'F' },
+                                   { last_seen => { '<' => $inactive_date } });
 
   return;
 }

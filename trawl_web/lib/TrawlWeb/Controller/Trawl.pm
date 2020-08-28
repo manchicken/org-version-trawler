@@ -10,7 +10,7 @@ no warnings qw(experimental::signatures);    ## no critic (ProhibitNoWarnings)
 
 use Trawler;
 
-use Mojo::Date;
+use TrawlWeb::Util qw/present_date_from_date/;
 use Mojo::IOLoop::Subprocess;
 use Readonly;
 
@@ -53,7 +53,7 @@ sub set_timer {
 }
 
 sub trawler_stats {
-  return { start_time => Mojo::Date->new($runner_start_time)->to_datetime,
+  return { start_time        => present_date_from_date($runner_start_time),
            last_run_duration => $runner_last_finish_duration,
            current_duration  => time() - $runner_start_time,
            run_count         => $run_count
@@ -127,6 +127,10 @@ sub run ($self) {
   }
 
   $self->stash(msg => "Starting trawler.");
+
+  # Invalidate any caches we have.
+  $self->org_member->invalidate_cache;
+
   return $self->run_subprocess;
 }
 

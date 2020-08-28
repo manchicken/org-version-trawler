@@ -75,6 +75,20 @@ th {
   padding: 1px 6px;
 }
 
+ul.contributor-list {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+ul.contributor-list > li {
+  margin: 0px;
+  padding: 0px;
+}
+
+li.member-status-no > a {
+  text-decoration: line-through underline;
+}
+
 /** Breadcrumbs. */
 
 #breadcrumbs > ol {
