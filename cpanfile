@@ -11,6 +11,7 @@ requires 'FindBin'                    => '0';
 requires 'XML::TreePP'                => '0';
 requires 'DateTime'                   => '0';
 requires 'DateTime::Format::Strptime' => '0';
+requires 'List::MoreUtils'            => '0';
 
 # This isn't because we use PG=> it's just got a better API.
 requires 'Mojo::Pg' => '0';

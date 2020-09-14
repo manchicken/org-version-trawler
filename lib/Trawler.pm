@@ -6,6 +6,9 @@ use Carp qw/cluck/;
 use utf8;
 
 use Mojo::Date;
+use List::MoreUtils qw/natatime/;
+use Readonly;
+use Data::Dumper;
 
 use Git;
 use PackageManager;
@@ -46,9 +49,9 @@ sub _record_repo ($self, $tree) {
 
   my $repo_id =
     $self->{persistence}->upsert_repository(
-    $tree->{repo}->{user}, $tree->{repo}->{name},
-    $tree->{repo}->{sha},  $tree->{repo}->{archived},
-    $tree->{repo}->{metadata},
+                               $tree->{repo}->{user}, $tree->{repo}->{name},
+                               $tree->{repo}->{sha},  $tree->{repo}->{archived},
+                               $tree->{repo}->{metadata},
                                            );
   say <<"EODEBUG";
 Recorded repository $tree->{repo}->{user}/$tree->{repo}->{name} at <<$tree->{repo}->{sha}>>($tree->{repo}->{archived}) as repo ID $repo_id!
@@ -174,16 +177,23 @@ EODEBUG
 sub trawl_all ($self, $org = undef, $incremental = 0, $stopper = sub { 0 }) {
 
   $org ||= $ENV{GITHUB_USER_ORG};
+  say STDERR "Starting trawl.";
 
   # Let's trawl the users...
   $self->trawl_users($org, $stopper);
   say STDERR "User pull is done.";
+
+  return if ($stopper->());
 
   # Loop over all of the repository trees
   while (my $tree = $self->next_repo_tree($org, $incremental, $stopper)) {
     $self->trawl_repo_tree($tree);
     last if $stopper->();
   }
+
+  return if ($stopper->());
+
+  $self->trawl_vulnerabilities($org, undef, $stopper);
 
   say STDERR "TRAWLER IS FINISHED.";
 
@@ -197,6 +207,7 @@ sub trawl_one ($self, $org, $repo) {
   return if not $tree;
 
   $self->trawl_repo_tree($tree);
+  $self->trawl_vulnerabilities($org, $repo);
 
   return $tree->{repo_id};
 }
@@ -209,7 +220,7 @@ sub trawl_users ($self, $org, $stopper) {
   my $last_seen = Mojo::Date->new();
   while (my $user = $org_instance->next_member($org)) {
     last if $stopper->();
-    say STDERR "Recording User <<$user->{login}>>";
+    say STDERR "Recording User «$user->{login}»";
     my $rowid =
       $self->{persistence}->upsert_record('org_member',
                                           { login      => $user->{login},
@@ -225,12 +236,76 @@ sub trawl_users ($self, $org, $stopper) {
   $org_instance->close_member($org);
 
   my $inactive_date = Mojo::Date->new(time() - 60 * 60 * 12);
-  say STDERR "Now Date: $last_seen";
+  say STDERR "Now Date: «$last_seen»";
   say STDERR "Inactive Date: $inactive_date";
   local $ENV{DBI_TRACE} = 99;
   $self->{persistence}->db->update('org_member',
                                    { assumed_active => 'F' },
                                    { last_seen => { '<' => $inactive_date } });
+
+  return;
+}
+
+Readonly my $V4_CHUNK_SIZE => 100;
+
+sub _make_query_for_n_repos ($self, $n) {
+  return if !$n;    # No repos? No query.
+
+  # Construct the dynamic pieces.
+  my $vars_list   = join ', ', map { '$repo' . $_ . ': String!' } (1 .. $n);
+  my $object_list = join "\n", map {
+    <<"EOLINE"
+    repo$_: repository(name: \$repo$_) {
+      vulnerabilityAlerts { totalCount }
+    }
+EOLINE
+  } (1 .. $n);
+
+  my $query = <<"EOQUERY";
+query RepositoryVulnerabilities(\$orgName: String!, $vars_list) {
+  organization( login: \$orgName ) {
+    $object_list
+  }
+}
+EOQUERY
+
+  return $query;
+}
+
+sub trawl_vulnerabilities ($self, $org, $repo = undef, $stopper = sub { 0 }) {
+  my $gh = $self->{git}->gh_gql;
+
+  my $where = { org => $org };
+  if ($repo) {
+    $where->{name} = $repo;
+  }
+
+  my @all_repos =
+    $self->{db}->select('repository', 'rowid,name', $where)
+    ->hashes->to_array->@*;
+
+  my $chunker = natatime $V4_CHUNK_SIZE, @all_repos;
+  while (my @subset = $chunker->()) {
+    last if $stopper->();
+    my $gql_query = $self->_make_query_for_n_repos(scalar @subset);
+    my $gql_vars = { orgName => $org,
+                     map { ('repo' . ($_ + 1) => $subset[$_]->{name}) }
+                       (0 .. (scalar @subset) - 1)
+                   };
+    my $data = $gh->query($gql_query, $gql_vars);
+
+    for my $result (keys $data->{data}->{organization}->%*) {
+      my $repo  = $data->{data}->{organization}->{$result};
+      my $rowid = $subset[ int(substr($result, 4)) - 1 ]->{rowid} || next;
+      say STDERR
+"Updating rowid «$rowid» with count «$repo->{vulnerabilityAlerts}->{totalCount}»";
+      $self->{db}->update(
+          'repository',
+          { vulnerability_count => $repo->{vulnerabilityAlerts}->{totalCount} },
+          { rowid               => $rowid }
+      );
+    }
+  }
 
   return;
 }

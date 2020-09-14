@@ -36,6 +36,21 @@ sub count_unmaintained ($self) {
                      )->hash->{count_value};
 }
 
+sub count_vulnerable ($self) {
+  return
+    $self->db->select($self->base_table,
+                      'count(rowid) as count_value',
+                      { archived => 'F', vulnerability_count => { '>' => 0 }, }
+                     )->hash->{count_value};
+}
+
+sub count_repos ($self) {
+  return
+    $self->db->select($self->base_table,
+                      'count(rowid) as count_value',
+                      { archived => 'F' })->hash->{count_value};
+}
+
 sub list_unmaintained ($self, $order = 'asc', @sort_cols) {
   if (0 == scalar @sort_cols) {
 
@@ -47,7 +62,8 @@ sub list_unmaintained ($self, $order = 'asc', @sort_cols) {
     if (    $item ne 'org'
         and $item ne 'name'
         and $item ne 'last_commit'
-        and $item ne 'last_committed_by')
+        and $item ne 'last_committed_by'
+        and $item ne 'vulnerability_count')
     {
       raise 'Invalid sort columns: ' . join(', ', @sort_cols);
     }
@@ -66,6 +82,39 @@ sub list_unmaintained ($self, $order = 'asc', @sort_cols) {
                           '<=' => \qq{date(date('now'), '$UNMAINTAINED_PERIOD')}
                         },
                         archived => 'F',
+                      },
+                      { "-$order" => \@sort_cols }
+                     )->hashes;
+}
+
+sub list_vulnerable ($self, $order = 'asc', @sort_cols) {
+  if (0 == scalar @sort_cols) {
+
+    # Default sort
+    @sort_cols = qw/last_commit org name/;
+  }
+
+  for my $item (@sort_cols) {
+    if (    $item ne 'org'
+        and $item ne 'name'
+        and $item ne 'last_commit'
+        and $item ne 'last_committed_by'
+        and $item ne 'vulnerability_count')
+    {
+      raise 'Invalid sort columns: ' . join(', ', @sort_cols);
+    }
+  }
+
+  # Force to ascending if we don't have a valid one.
+  if (lc $order ne 'asc' and lc $order ne 'desc') {
+    $order = 'asc';
+  }
+
+  return
+    $self->db->select($self->base_table,
+                      'rowid,*',
+                      { vulnerability_count => { '>' => 0 },
+                        archived            => 'F',
                       },
                       { "-$order" => \@sort_cols }
                      )->hashes;

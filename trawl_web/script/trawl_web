@@ -1,9 +1,10 @@
 #!/usr/bin/env perl
 
-use strict;
-use warnings;
-use utf8;
 use Modern::Perl qw/2020/;
+
+# Set the output encoding to UTF-8
+binmode STDOUT, q{:encoding(UTF-8)};
+binmode STDERR, q{:encoding(UTF-8)};
 
 # This allows us to find our own libs which are shared by the Trawler.
 use FindBin qw/$Bin/;

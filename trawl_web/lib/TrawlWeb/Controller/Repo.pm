@@ -275,9 +275,10 @@ This action displays the report of unmaintained repositories.
 =cut
 
 Readonly my $SORT_ORDERS => {
-              name              => [qw/org name last_commit/],
-              last_commit       => [qw/last_commit org name/],
-              last_committed_by => [qw/last_committed_by last_commit org name/],
+          name                => [qw/org name last_commit/],
+          last_commit         => [qw/last_commit org name/],
+          last_committed_by   => [qw/last_committed_by last_commit org name/],
+          vulnerability_count => [qw/vulnerability_count last_commit org name/],
 };
 
 sub get_unmaintained_report($self) {
@@ -332,6 +333,60 @@ sub get_unmaintained_report($self) {
 
   return
     $self->stash(results   => $unmaintained_list,
+                 order     => $order,
+                 sort_pref => $sort_pref
+                );
+}
+
+sub get_vulnerable_report($self) {
+  my $sort_pref = $self->param('sort')  || 'vulnerability_count';
+  my $order     = $self->param('order') || 'desc';
+
+  $self->stash(message     => q{},
+               breadcrumbs => [ { title => "Package Manager", url => q{/} },
+                                { title => 'Vulnerable Repositories' }
+                              ],
+               results => [],
+              );
+
+  # Validate sort order
+  my @sort_cols = qw/last_commit org name/;
+  if (not exists $SORT_ORDERS->{$sort_pref}) {
+    $self->stash(message => 'Invalid sort order: ' . xml_escape($sort_pref));
+  } else {
+    @sort_cols = @{ $SORT_ORDERS->{$sort_pref} };
+  }
+
+  # Force to ascending if we don't have a valid one.
+  if (lc $order ne 'asc' and lc $order ne 'desc') {
+    $order = 'asc';
+  }
+
+  # Make the call out to the model
+  my $vulnerable_list =
+    $self->repository->list_vulnerable($order, @sort_cols)->to_array;
+  if (not scalar @{$vulnerable_list}) {
+    $self->stash(
+             message => q{No vulnerable repositories. Wow. That's incredible!});
+  }
+
+  # Add the contributors
+  for my $result (@{$vulnerable_list}) {
+    my $contributors =
+      $self->repository_contributor->find_by_repository($result->{rowid})
+      ->reduce(
+      sub {
+        $b->{is_member} = $self->org_member->is_member($b->{login});
+        push @{$a}, $b;
+        $a;
+      },
+      []
+              );
+    $result->{contributors} = $contributors;
+  }
+
+  return
+    $self->stash(results   => $vulnerable_list,
                  order     => $order,
                  sort_pref => $sort_pref
                 );

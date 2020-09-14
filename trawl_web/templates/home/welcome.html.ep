@@ -8,6 +8,9 @@
 <h2>Package Manager Chart</h2>
 
 <h2>Search for a Repository</h2>
+
+<p>There are presently&nbsp;<%= $repository_count =%>&nbsp;repositories in the Trawler.</p>
+
 %= form_for '/search/repo' => (method => q/GET/, class => 'search-form') => begin
   %= label_for terms => 'Search for a Repo:'
   %= search_field terms => '', id=>'terms'
@@ -17,6 +20,7 @@
 <h2>Browse Potentially Unmaintained Repos</h2>
 
 <p>There are presently&nbsp;<a href="<%= url_for '/repo/unmaintained' =%>"><%= $unmaintained_count =%>&nbsp;unmaintained repositories.</a></p>
+<p>There are presently&nbsp;<a href="<%= url_for '/repo/vulnerable' =%>"><%= $vulnerable_count =%>&nbsp;repositories with vulnerabilities known to GitHub.</a></p>
 
 <h2>Browse Package Managers</h2>
 %== package_manager_chart
