@@ -106,6 +106,7 @@ sub startup {
   ## This triggers a manual trawl.
   # Use sparingly
   $r->get('/trawl')->to('trawl#run');
+  $r->get('/trawl/:org/:repo')->to('trawl#run_for_one');
 
   ## Search endpoints
   $r->any('/search/repo')->to('search#repo');
@@ -121,6 +122,7 @@ sub startup {
 
   ## Unmaintained repository stuff.
   $r->get('/repo/unmaintained')->to('repo#get_unmaintained_report');
+  $r->get('/repo/vulnerable')->to('repo#get_vulnerable_report');
 
   return;
 }

@@ -134,6 +134,24 @@ sub run ($self) {
   return $self->run_subprocess;
 }
 
+sub run_for_one ($self) {
+  my $org  = $self->param('org')  || undef;
+  my $repo = $self->param('repo') || undef;
+
+  # Must have both!
+  return if (not $org or not $repo);
+
+  if ($runner_running) {
+    return $self->stash(msg => "The trawler is already running!");
+  }
+
+  $self->org_member->invalidate_cache;
+  my $trawler = Trawler->new;
+
+  return $self->stash(msg => "Trawling repo &laquo;$org/$repo&raquo; ID: "
+                      . $trawler->trawl_one($org, $repo));
+}
+
 # Start things off! (unless trawler is disabled.)
 if (not exists $ENV{DISABLE_TRAWLER}) {
   TrawlWeb::Controller::Trawl->set_timer;

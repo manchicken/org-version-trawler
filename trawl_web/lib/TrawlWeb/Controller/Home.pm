@@ -15,8 +15,16 @@ sub welcome {
 
   $self->stash(breadcrumbs => [ { title => "Package Manager" } ]);
 
+  # Grab a total count of repositories.
+  $self->stash(repository_count => $self->repository->count_repos || 'UNKNOWN');
+
   # Grab the count of unmaintained repos
-  $self->stash(unmaintained_count => $self->repository->count_unmaintained || 'UNKNOWN');
+  $self->stash(unmaintained_count => $self->repository->count_unmaintained
+               || 'UNKNOWN');
+
+  # Grab a count of the repos for which we have known vulnerabilities
+  $self->stash(vulnerable_count => $self->repository->count_vulnerable
+               || 'UNKNOWN');
 
   # Render template "example/welcome.html.ep" with message
   return $self->stash(

@@ -7,29 +7,31 @@ use utf8;
 use Carp qw/croak cluck/;
 use Syntax::Keyword::Try;
 use Net::GitHub::V3;
+use Net::GitHub::V4;
 use Data::Dumper;
 
 use Git::Tree;
 
-sub new {
-  my ($pkg) = @_;
+sub new($pkg) {
 
   return bless {}, $pkg;
 }
 
-sub init {
-  my ($self) = @_;
+sub init($self) {
 
   # REST APIs
   $self->{gh_3} =
     Net::GitHub::V3->new(access_token => $ENV{GITHUB_ACCESS_TOKEN});
 
+  # GraphQL API
+  $self->{gh_4} =
+    Net::GitHub::V4->new(access_token => $ENV{GITHUB_ACCESS_TOKEN});
+
   return $self;
 }
 
 # Fetch a page of repositories.
-sub next_repository {
-  my ($self, $opts) = @_;
+sub next_repository ($self, $opts = {}) {
 
   my $org = exists $opts->{org} ? $opts->{org} : $ENV{GITHUB_USER_ORG};
 
@@ -40,13 +42,15 @@ sub next_repository {
   return $self->gh->repos->next_org_repo($org);
 }
 
-sub gh {
-  my ($self) = @_;
+sub gh($self) {
   return exists $self->{gh_3} ? $self->{gh_3} : $self->init->{gh_3};
 }
 
-sub get_tree_for_next_repo {
-  my ($self, $ctx) = @_;
+sub gh_gql ($self) {
+  return exists $self->{gh_4} ? $self->{gh_4} : $self->init->{gh_4};
+}
+
+sub get_tree_for_next_repo ($self, $ctx = undef) {
 
   # Get the next repo, keeping in mind we may have to skip a few.
   while (my $repo_deets = $self->next_repository) {
@@ -55,7 +59,7 @@ sub get_tree_for_next_repo {
         or not exists $repo_deets->{owner}->{login}
         or not exists $repo_deets->{name})
     {
-      say "ACK! FAILED TO GET NEXT REPO!";
+      say "🚨ACK! FAILED TO GET NEXT REPO!";
       return;
     }
 
@@ -76,7 +80,7 @@ sub get_contributors_for_repo ($self, $user, $repo) {
 
   try { $contributors = $self->gh->repos->contributors($user, $repo); }
   catch {
-    my ($err) = @_;
+    my $err = shift;
     cluck "Failed to get contributors for repo $user/$repo: $err";
   };
 
@@ -88,11 +92,19 @@ sub get_tree_for_repo ($self, $user, $repo) {
   # Set the user and the repo
   $self->gh->set_default_user_repo($user, $repo);
 
+  my $repo_deets = undef;
+  try { $repo_deets = $self->gh->repos->get($user, $repo); }
+  catch {
+    my $err = shift;
+    cluck "Failed to get repo $user/$repo: $err";
+    return;
+  };
+
   # Get the most recent commit
   my $commit = undef;
   try { $commit = $self->gh->repos->next_commit; }
   catch {
-    my ($err) = @_;
+    my $err = shift;
     cluck "Failed to get latest commit for repo $user/$repo: $err";
     return;
   };
@@ -107,7 +119,7 @@ sub get_tree_for_repo ($self, $user, $repo) {
 
   try { $tree = $self->gh->git_data->trees($commit->{commit}->{tree}->{sha}); }
   catch {
-    my ($err) = @_;
+    my $err = shift;
     say STDERR Dumper($commit);
     cluck "Failed to get tree for repo $user/$repo: $err";
     return;
@@ -120,6 +132,7 @@ sub get_tree_for_repo ($self, $user, $repo) {
         user     => $user,
         name     => $repo,
         sha      => $commit->{sha},
+        archived => $repo_deets->{archived} ? 'T' : 'F',
         metadata => {
           empty => defined $commit
           ? 'F'

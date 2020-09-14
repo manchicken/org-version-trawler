@@ -27,6 +27,7 @@ create table repository (
   sha TEXT NOT NULL,
   archived CHAR(1) NOT NULL,
   empty CHAR(1) NOT NULL,
+  vulnerability_count INTEGER NULL,
   last_commit DATETIME NULL,
   last_committed_by TEXT NULL
 );
