@@ -23,13 +23,18 @@ sub next_node {
   if (ref $filter and ref $filter ne 'CODE') {
     croak "Filters passed to `Git::Tree->next()` must be a CODEREF.";
   } elsif (!ref $filter) {
-    $filter = sub { 1 };
+    $filter = sub {1};
   }
 
   # Go throughout the list
   while ($self->{_index} < scalar @{ $self->{tree} }) {
     my $value = Git::Tree::Entry->new(
-                { %{ $self->{tree}->[ $self->{_index} ] }, gh => $self->{gh} });
+        { %{ $self->{tree}->[ $self->{_index} ] },
+          gh => $self->{gh},
+          repo =>
+              { name => $self->{repo}->{name}, user => $self->{repo}->{user} }
+        }
+    );
     $self->{_index} += 1;
 
     # If the filter is satisfied, return the value.
