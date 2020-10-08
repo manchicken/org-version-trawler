@@ -12,20 +12,33 @@ use Data::Dumper;
 
 use Git::Tree;
 
+my $github_refs = {
+  gh3 => undef,
+  gh4 => undef,
+};
+
 sub new($pkg) {
 
   return bless {}, $pkg;
 }
 
-sub init($self) {
-
+sub _get_gh_refs($self=undef) {
   # REST APIs
-  $self->{gh_3} =
+  $github_refs->{gh3} ||=
     Net::GitHub::V3->new(access_token => $ENV{GITHUB_ACCESS_TOKEN});
 
   # GraphQL API
-  $self->{gh_4} =
+  $github_refs->{gh4} ||=
     Net::GitHub::V4->new(access_token => $ENV{GITHUB_ACCESS_TOKEN});
+
+  return;
+}
+
+sub init($self) {
+
+  $self->_get_gh_refs;
+  $self->{gh_3} = $github_refs->{gh3};
+  $self->{gh_4} = $github_refs->{gh4};
 
   return $self;
 }

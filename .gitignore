@@ -47,3 +47,5 @@ cli.log
 
 *.log
 queries.sql
+tags
+*.swp
