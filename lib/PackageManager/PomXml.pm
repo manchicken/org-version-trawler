@@ -59,6 +59,35 @@ sub get_parent_props ($self, $parent_content) {
       : {};
 }
 
+# Try to support project inheritance!
+sub inherit_parent_properties ($self, $pom) {
+
+  # No parent? We're done here.
+  if (not exists $pom->{parent}) {
+    return {};
+  }
+
+  # Try to load the file.
+  my $parentPath
+      = exists $pom->{parent}->{relativePath}
+      ? $pom->{parent}->{relativePath}
+      : "/pom.xml";
+  my $props_to_return = $self->get_parent_props(
+              $self->get_parent_content($self->get_parent_path($parentPath)));
+
+# It appears that `project.version` is a special property in the pom.xml file.
+  # 
+  my @precedence = grep { !!$_ } (
+    $props_to_return->{'project.version'} || undef,
+    $pom->{'version'} || undef,
+    $pom->{'parent'}->{'version'} || undef,
+    $props_to_return->{'version'} || undef
+  );
+  $props_to_return->{'project.version'} = $precedence[0];
+
+  return $props_to_return;
+}
+
 sub parse($self) {
 
 # If some of this code looks super imperative and dated, that's because it is.
@@ -103,21 +132,9 @@ sub parse($self) {
     }
 
     # Properties don't see so fluid as the dependencies structure.
-    my $properties = $pom->{properties};
-
-    # Support relative path parents!
-    if (exists $pom->{parent}->{relativePath}) {
-      $properties = {
-                  %{$properties},
-                  %{
-                    $self->get_parent_props(
-                      $self->get_parent_content(
-                        $self->get_parent_path($pom->{parent}->{relativePath})
-                      )
-                    )
-                   }
-      };
-    }
+    my $properties = { %{ $self->inherit_parent_properties($pom) },
+                       %{ $pom->{properties} },
+                     };
 
     # Now we're going to construct the internal dependency list.
     for my $raw_dep (@{$depref}) {
