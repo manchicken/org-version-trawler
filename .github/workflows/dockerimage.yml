@@ -21,5 +21,5 @@ jobs:
           PASSWORD: ${{ secrets.DOCKERHUB_ACCESS_KEY }}
           DOCKERFILE: "Dockerfile"
           IMAGE_NAME: "washpost/org-version-trawler"
-          TAG_NAME: "v1.2.3"
+          TAG_NAME: "v1.2.5"
           LATEST: "true"
