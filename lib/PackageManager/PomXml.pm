@@ -64,7 +64,7 @@ sub inherit_parent_properties ($self, $pom) {
 
   # No parent? We're done here.
   if (not exists $pom->{parent}) {
-    return {};
+    return exists $pom->{version} ? {'project.version'=>$pom->{version}} : {};
   }
 
   # Try to load the file.
